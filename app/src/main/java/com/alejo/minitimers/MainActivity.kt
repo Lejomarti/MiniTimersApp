@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.ui.MiniTimerScreen
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MiniTimersTheme {
-                MiniTimersApp()
+                MiniTimerScreen()
             }
         }
     }
@@ -66,8 +67,8 @@ fun MiniTimersApp() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MinitimersAppPreview() {
     MiniTimersTheme {
-        MiniTimersApp()
+        MiniTimerScreen()
     }
 }
