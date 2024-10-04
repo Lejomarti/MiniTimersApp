@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.tooling.preview.Preview
+import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
 fun MiniTimerScreen(
 
 ) {
-    var HardCodedTime = 10_000L
+    val HardCodedTime = 10_000L
 
     var timeRemaining by remember { mutableStateOf(HardCodedTime) }
     var isRunning by remember { mutableStateOf(false) }
@@ -63,6 +65,7 @@ fun MiniTimerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        TimersCarousel(timers = listOf(300_000L, 600_000L, 900_000L,700_000L),MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.height(24.dp))
         TimerRing(
             progress = timeRemaining / HardCodedTime.toFloat(),
@@ -70,6 +73,7 @@ fun MiniTimerScreen(
             additionalText = "00:00:00" // Segundo texto
         )
         Spacer(modifier = Modifier.height(24.dp))
+        TimersCarousel(timers = listOf(300_000L, 600_000L, 900_000L,700_000L),color = Color.LightGray)
 
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -145,10 +149,19 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
     }
 }
 
-// Función auxiliar para formatear el tiempo en mm:ss
+
+
 fun formatTime(timeMillis: Long): String {
     val hours = (timeMillis / 1000) / 3600
     val minutes = (timeMillis / 1000) / 60
     val seconds = (timeMillis / 1000) % 60
     return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MinitimerScreenPreview() {
+    MiniTimersTheme {
+        MiniTimerScreen()
+    }
 }
