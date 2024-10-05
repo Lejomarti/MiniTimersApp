@@ -12,17 +12,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
+import com.alejo.minitimers.data.Timer
+import com.alejo.minitimers.data.timersList
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
 fun MiniTimerScreen(
 
 ) {
-    val HardCodedTime = 10_000L
+    val HardCodedTime = 10L
 
     var timeRemaining by remember { mutableStateOf(HardCodedTime) }
     var isRunning by remember { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
+
+    val upperList = remember { mutableStateListOf(*timersList.toTypedArray()) }
+    val lowerList = remember { mutableStateListOf<Timer>() }
+
+
+    var currentTimer by remember { mutableStateOf(upperList.firstOrNull()) }
 
     fun startTimer() {
         if (countDownTimer == null) {
@@ -36,6 +44,7 @@ fun MiniTimerScreen(
                 override fun onFinish() {
                     timeRemaining = 0L
                     isRunning = false
+                    onTimerFinish()
                 }
             }.start()
             isRunning = true
@@ -45,17 +54,36 @@ fun MiniTimerScreen(
     // Función para pausar el temporizador
     fun pauseTimer() {
         countDownTimer?.cancel()
-        countDownTimer = null // Reiniciar el temporizador
+        countDownTimer = null
         isRunning = false
     }
 
     // Función para cancelar el temporizador
     fun cancelTimer() {
         countDownTimer?.cancel()
-        countDownTimer = null // Reiniciar el temporizador
-        timeRemaining = HardCodedTime // Volver al tiempo inicial
+        countDownTimer = null
+        timeRemaining = HardCodedTime
         isRunning = false
     }
+
+
+
+    fun startNextTimer() {  //1
+        if (upperList.isNotEmpty()) {
+            currentTimer = upperList.first()
+            upperList.removeAt(0)
+            startTimer() // Lógica para iniciar el temporizador
+        }
+    }
+
+    fun onTimerFinish() {
+        if (currentTimer != null) {
+            lowerList.add(currentTimer!!)
+            currentTimer = null
+            startNextTimer() // Iniciar el siguiente temporizador
+        }
+    }
+
 
     // Pantalla del temporizador
     Column(
@@ -65,21 +93,24 @@ fun MiniTimerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TimersCarousel(timers = listOf(300_000L, 600_000L, 900_000L,700_000L),MaterialTheme.colorScheme.primary)
+        //primer carousel
+        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.height(24.dp))
+
         TimerRing(
             progress = timeRemaining / HardCodedTime.toFloat(),
             timeText = formatTime(timeRemaining),
             additionalText = "00:00:00" // Segundo texto
         )
         Spacer(modifier = Modifier.height(24.dp))
-        TimersCarousel(timers = listOf(300_000L, 600_000L, 900_000L,700_000L),color = Color.LightGray)
 
+        //segundo carousel
+        TimersCarousel(timers = lowerList, color = Color.LightGray)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = {
-                    if (!isRunning) startTimer()
+                    if (!isRunning) startNextTimer()
                 },
                 enabled = !isRunning
             ) {
@@ -148,7 +179,6 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
         }
     }
 }
-
 
 
 fun formatTime(timeMillis: Long): String {

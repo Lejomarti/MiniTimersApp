@@ -14,17 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.data.Timer
+import com.alejo.minitimers.data.timersList
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
-fun TimersCarousel(timers: List<Long>,color: Color) {
+fun TimersCarousel(timers: List<Timer>, color: Color) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
 
-        items(timers) { time ->
-            TimerCard(timeText = time,color = color)
+        items(timers) { timer ->
+            TimerCard(timeText = timer.time,color = color)
 
         }
     }
@@ -66,6 +68,6 @@ fun TimerCard(timeText: Long,color: Color) {
 @Composable
 fun MinitimersCarouselPreview() {
     MiniTimersTheme {
-        TimersCarousel(timers = listOf(300000L, 600000L, 900000L),color = MaterialTheme.colorScheme.primary)
+        TimersCarousel(timers = timersList,color = MaterialTheme.colorScheme.primary)
     }
 }
