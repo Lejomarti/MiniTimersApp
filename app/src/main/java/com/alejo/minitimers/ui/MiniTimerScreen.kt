@@ -20,16 +20,15 @@ import com.alejo.minitimers.ui.theme.MiniTimersTheme
 fun MiniTimerScreen(
 
 ) {
-    val HardCodedTime = 10000L
+//    val HardCodedTime = 10000L
 
     var wasInitialized by remember { mutableStateOf(false) }
-    var timeRemaining by remember { mutableStateOf(HardCodedTime) }
+    var timeRemaining by remember { mutableStateOf(0L) }
     var isRunning by remember { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
 
     val upperList = remember { mutableStateListOf(*timersList.toTypedArray()) }
     val lowerList = remember { mutableStateListOf<Timer>() }
-
     var currentTimer by remember { mutableStateOf(upperList.firstOrNull()) }
 
     fun resetLists() {
@@ -45,8 +44,13 @@ fun MiniTimerScreen(
         }
     }
 
+
     fun startTimer() {
-        if (countDownTimer == null) {
+        if (countDownTimer == null && upperList.isNotEmpty()) {
+            wasInitialized = true
+            currentTimer = upperList.first() // Tomar el primer valor de upperList
+            timeRemaining = currentTimer!!.time // Asignar el tiempo del temporizador actual
+
             val interval = if (timeRemaining <= 300_000L) 40L else 1000L
 
             countDownTimer = object : CountDownTimer(timeRemaining, interval) {
@@ -55,7 +59,7 @@ fun MiniTimerScreen(
                 }
 
                 override fun onFinish() {
-                    if (upperList.isNotEmpty()) {
+/*                   if (upperList.isNotEmpty()) {
                         timeRemaining = 0L
                         currentTimer = upperList.first()
                         upperList.removeAt(0)
@@ -64,11 +68,15 @@ fun MiniTimerScreen(
                         timeRemaining = 0L
                         isRunning = false
                         onTimerFinish()
-                    }
+                    } */
+                    timeRemaining = 0L
+                    isRunning=false
+                    onTimerFinish()
+
                 }
             }.start()
             isRunning = true
-            wasInitialized = true
+
         }
     }
 
@@ -83,20 +91,22 @@ fun MiniTimerScreen(
     fun cancelTimer() {
         countDownTimer?.cancel()
         countDownTimer = null
-        timeRemaining = HardCodedTime
+        timeRemaining = 0L
         isRunning = false
         wasInitialized = false
         resetLists()
     }
 
 
-//    fun startNextTimer() {
-//        if (upperList.isNotEmpty()) {
-//            currentTimer = upperList.first()
-//            upperList.removeAt(0)
-//            startTimer() // Lógica para iniciar el temporizador
-//        }
-//    }
+    fun startNextTimer() {
+        if (upperList.isNotEmpty()) {
+            currentTimer = upperList.first() // Asigna el nuevo temporizador
+            upperList.removeAt(0) // Elimina de upperList
+            startTimer() // Llama a startTimer para el nuevo temporizador
+        } else {
+            currentTimer = null
+        }
+    }
 
 
     // Pantalla del temporizador
@@ -112,7 +122,7 @@ fun MiniTimerScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         TimerRing(
-            progress = timeRemaining / HardCodedTime.toFloat(),
+            progress = timeRemaining / (currentTimer?.time ?: 1).toFloat(), // Evitar división por cero
             timeText =
             when {
                 !wasInitialized -> formatTime(upperList.sumOf { it.time }) // Mostrar suma si no se ha inicializado
