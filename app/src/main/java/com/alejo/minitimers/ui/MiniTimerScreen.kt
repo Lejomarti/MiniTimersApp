@@ -1,6 +1,7 @@
 package com.alejo.minitimers.ui
 
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -41,8 +42,15 @@ fun MiniTimerScreen(
         if (currentTimer != null) {
             lowerList.add(currentTimer!!)
             currentTimer = null
+
         }
     }
+
+//    fun pauseTimer() {
+//        countDownTimer?.cancel()
+//        countDownTimer = null
+//        isRunning = false
+//    }
 
 
     fun startTimer() {
@@ -50,29 +58,29 @@ fun MiniTimerScreen(
             wasInitialized = true
             currentTimer = upperList.first() // Tomar el primer valor de upperList
             timeRemaining = currentTimer!!.time // Asignar el tiempo del temporizador actual
+            upperList.removeAt(0)
 
             val interval = if (timeRemaining <= 300_000L) 40L else 1000L
 
             countDownTimer = object : CountDownTimer(timeRemaining, interval) {
                 override fun onTick(millisUntilFinished: Long) {
                     timeRemaining = millisUntilFinished
+                    Log.d("alejoIsTalking","Current Value: $timeRemaining")
                 }
 
                 override fun onFinish() {
-/*                   if (upperList.isNotEmpty()) {
-                        timeRemaining = 0L
-                        currentTimer = upperList.first()
-                        upperList.removeAt(0)
+                    if(upperList.isNotEmpty()){
+                        countDownTimer=null
+                        onTimerFinish()
                         startTimer()
-                    } else {
+
+                    }
+                    if(upperList.isEmpty() && (timeRemaining < 100)) { //por aca hay un bug
+                        Log.d("alejoIsTalking", "Esto se llama solo si ya se acaba la lista")
                         timeRemaining = 0L
                         isRunning = false
                         onTimerFinish()
-                    } */
-                    timeRemaining = 0L
-                    isRunning=false
-                    onTimerFinish()
-
+                    }
                 }
             }.start()
             isRunning = true
@@ -96,18 +104,6 @@ fun MiniTimerScreen(
         wasInitialized = false
         resetLists()
     }
-
-
-    fun startNextTimer() {
-        if (upperList.isNotEmpty()) {
-            currentTimer = upperList.first() // Asigna el nuevo temporizador
-            upperList.removeAt(0) // Elimina de upperList
-            startTimer() // Llama a startTimer para el nuevo temporizador
-        } else {
-            currentTimer = null
-        }
-    }
-
 
     // Pantalla del temporizador
     Column(
