@@ -20,8 +20,9 @@ import com.alejo.minitimers.ui.theme.MiniTimersTheme
 fun MiniTimerScreen(
 
 ) {
-    val HardCodedTime = 10L
+    val HardCodedTime = 10000L
 
+    var wasInitialized by remember { mutableStateOf(false) }
     var timeRemaining by remember { mutableStateOf(HardCodedTime) }
     var isRunning by remember { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
@@ -29,8 +30,20 @@ fun MiniTimerScreen(
     val upperList = remember { mutableStateListOf(*timersList.toTypedArray()) }
     val lowerList = remember { mutableStateListOf<Timer>() }
 
-
     var currentTimer by remember { mutableStateOf(upperList.firstOrNull()) }
+
+    fun resetLists() {
+        upperList.clear()
+        upperList.addAll(timersList.toTypedArray())
+        lowerList.clear()
+    }
+
+    fun onTimerFinish() {
+        if (currentTimer != null) {
+            lowerList.add(currentTimer!!)
+            currentTimer = null
+        }
+    }
 
     fun startTimer() {
         if (countDownTimer == null) {
@@ -42,12 +55,20 @@ fun MiniTimerScreen(
                 }
 
                 override fun onFinish() {
-                    timeRemaining = 0L
-                    isRunning = false
-                    onTimerFinish()
+                    if (upperList.isNotEmpty()) {
+                        timeRemaining = 0L
+                        currentTimer = upperList.first()
+                        upperList.removeAt(0)
+                        startTimer()
+                    } else {
+                        timeRemaining = 0L
+                        isRunning = false
+                        onTimerFinish()
+                    }
                 }
             }.start()
             isRunning = true
+            wasInitialized = true
         }
     }
 
@@ -64,25 +85,18 @@ fun MiniTimerScreen(
         countDownTimer = null
         timeRemaining = HardCodedTime
         isRunning = false
+        wasInitialized = false
+        resetLists()
     }
 
 
-
-    fun startNextTimer() {  //1
-        if (upperList.isNotEmpty()) {
-            currentTimer = upperList.first()
-            upperList.removeAt(0)
-            startTimer() // Lógica para iniciar el temporizador
-        }
-    }
-
-    fun onTimerFinish() {
-        if (currentTimer != null) {
-            lowerList.add(currentTimer!!)
-            currentTimer = null
-            startNextTimer() // Iniciar el siguiente temporizador
-        }
-    }
+//    fun startNextTimer() {
+//        if (upperList.isNotEmpty()) {
+//            currentTimer = upperList.first()
+//            upperList.removeAt(0)
+//            startTimer() // Lógica para iniciar el temporizador
+//        }
+//    }
 
 
     // Pantalla del temporizador
@@ -99,7 +113,11 @@ fun MiniTimerScreen(
 
         TimerRing(
             progress = timeRemaining / HardCodedTime.toFloat(),
-            timeText = formatTime(timeRemaining),
+            timeText =
+            when {
+                !wasInitialized -> formatTime(upperList.sumOf { it.time }) // Mostrar suma si no se ha inicializado
+                else -> formatTime(timeRemaining) // Mostrar tiempo restante si se ha inicializado
+            },
             additionalText = "00:00:00" // Segundo texto
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -110,7 +128,7 @@ fun MiniTimerScreen(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = {
-                    if (!isRunning) startNextTimer()
+                    if (!isRunning) startTimer()
                 },
                 enabled = !isRunning
             ) {
@@ -183,7 +201,7 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
 
 fun formatTime(timeMillis: Long): String {
     val hours = (timeMillis / 1000) / 3600
-    val minutes = (timeMillis / 1000) / 60
+    val minutes = ((timeMillis / 1000) % 3600) / 60
     val seconds = (timeMillis / 1000) % 60
     return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
