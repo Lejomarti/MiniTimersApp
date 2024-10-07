@@ -1,9 +1,17 @@
 package com.alejo.minitimers.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,32 +26,42 @@ import com.alejo.minitimers.data.Timer
 import com.alejo.minitimers.data.timersList
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
+fun onAddClick() {
+    TODO("Not yet implemented")
+}
+
 @Composable
-fun TimersCarousel(timers: List<Timer>, color: Color) {
+fun TimersCarousel(timers: List<Timer>, color: Color, enabled: Boolean) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
 
         items(timers) { timer ->
-            TimerCard(timeText = timer.time,color = color)
-
+            TimerCard(timeText = timer.time, color = color)
+        }
+        item {
+            PlusIcon(enabled = false)
         }
     }
 }
 
 @Composable
-fun TimerCard(timeText: Long,color: Color) {
+fun TimerCard(timeText: Long, color: Color) {
 
-    Surface(modifier = Modifier
-        .height(124.dp)
-        .width(96.dp)) {
-        Column (
+    Surface(
+        modifier = Modifier
+            .height(124.dp)
+            .width(96.dp)
+    ) {
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.size(96.dp).padding(10.dp)
+                modifier = Modifier
+                    .size(96.dp)
+                    .padding(10.dp)
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     // Anillo de color sólido
@@ -64,10 +82,55 @@ fun TimerCard(timeText: Long,color: Color) {
     }
 }
 
+
+@Composable
+fun PlusIcon(enabled: Boolean) {
+    if (enabled) {
+        IconButton(
+            onClick = { onAddClick() }, // Acción para añadir temporizador
+            modifier = Modifier
+                .size(96.dp)
+                .background(Color.Gray, CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Timer",
+                tint = Color.White
+            )
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .height(124.dp)
+                .width(96.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(96.dp)
+                    .background(Color.LightGray.copy(alpha = 0.4f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                // Mostrar un anillo sin funcionalidad
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = "Add Timer",
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun MinitimersCarouselPreview() {
     MiniTimersTheme {
-        TimersCarousel(timers = timersList,color = MaterialTheme.colorScheme.primary)
+        TimersCarousel(
+            timers = timersList,
+            color = MaterialTheme.colorScheme.primary,
+            enabled = true
+        )
     }
 }
+

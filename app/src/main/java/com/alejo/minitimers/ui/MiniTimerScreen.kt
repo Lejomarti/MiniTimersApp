@@ -26,6 +26,7 @@ fun MiniTimerScreen(
     var wasInitialized by remember { mutableStateOf(false) }
     var timeRemaining by remember { mutableStateOf(0L) }
     var isRunning by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
 
     val upperList = remember { mutableStateListOf(*timersList.toTypedArray()) }
@@ -46,26 +47,19 @@ fun MiniTimerScreen(
         }
     }
 
-//    fun pauseTimer() {
-//        countDownTimer?.cancel()
-//        countDownTimer = null
-//        isRunning = false
-//    }
-
 
     fun startTimer() {
+        val interval = if (timeRemaining <= 300_000L) 40L else 1000L
+
         if (countDownTimer == null && upperList.isNotEmpty()) {
             wasInitialized = true
             currentTimer = upperList.first() // Tomar el primer valor de upperList
             timeRemaining = currentTimer!!.time // Asignar el tiempo del temporizador actual
             upperList.removeAt(0)
 
-            val interval = if (timeRemaining <= 300_000L) 40L else 1000L
-
             countDownTimer = object : CountDownTimer(timeRemaining, interval) {
                 override fun onTick(millisUntilFinished: Long) {
                     timeRemaining = millisUntilFinished
-                    Log.d("alejoIsTalking","Current Value: $timeRemaining")
                 }
 
                 override fun onFinish() {
@@ -84,15 +78,42 @@ fun MiniTimerScreen(
                 }
             }.start()
             isRunning = true
-
+            isPaused = false
         }
     }
 
-    // Función para pausar el temporizador
     fun pauseTimer() {
         countDownTimer?.cancel()
-        countDownTimer = null
+//        countDownTimer = null
         isRunning = false
+        isPaused = true
+    }
+
+    fun resumeTimer() {
+        if (timeRemaining > 0) {
+            val interval = if (timeRemaining <= 300_000L) 40L else 1000L
+
+            countDownTimer = object : CountDownTimer(timeRemaining, interval) {
+                override fun onTick(millisUntilFinished: Long) {
+                    timeRemaining = millisUntilFinished
+                }
+
+                override fun onFinish() {
+                    if (upperList.isNotEmpty()) {
+                        countDownTimer = null
+                        onTimerFinish()
+                        startTimer()
+                    } else if (upperList.isEmpty() && (timeRemaining < 100)) {
+                        timeRemaining = 0L
+                        isRunning = false
+                        onTimerFinish()
+                        Log.d("alejoIsTalking", "Esto se llama solo si ya se acaba la lista")
+                    }
+                }
+            }.start()
+            isRunning = true
+            isPaused = false // Cambia a estado de ejecución
+        }
     }
 
     // Función para cancelar el temporizador
@@ -101,6 +122,7 @@ fun MiniTimerScreen(
         countDownTimer = null
         timeRemaining = 0L
         isRunning = false
+        isPaused = false
         wasInitialized = false
         resetLists()
     }
@@ -114,7 +136,7 @@ fun MiniTimerScreen(
         verticalArrangement = Arrangement.Center
     ) {
         //primer carousel
-        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary)
+        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary, enabled = true)
         Spacer(modifier = Modifier.height(24.dp))
 
         TimerRing(
@@ -129,25 +151,30 @@ fun MiniTimerScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         //segundo carousel
-        TimersCarousel(timers = lowerList, color = Color.LightGray)
+        TimersCarousel(timers = lowerList, color = Color.LightGray,enabled = false)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = {
-                    if (!isRunning) startTimer()
+                    if (!isRunning && !isPaused) startTimer()
                 },
-                enabled = !isRunning
+                enabled = !wasInitialized
             ) {
                 Text(text = "Iniciar")
             }
 
             Button(
                 onClick = {
-                    if (isRunning) pauseTimer()
+                    if (isPaused) {
+                        resumeTimer() // Llama a reanudar si está pausado
+                    }
+                    else {
+                        pauseTimer() // Pausa si está en ejecución
+                    }
                 },
-                enabled = isRunning
+                enabled = isRunning || isPaused
             ) {
-                Text(text = "Pausar")
+                Text(text = if (isPaused) "Reanudar" else "Pausar")
             }
 
             Button(onClick = { cancelTimer() }) {
