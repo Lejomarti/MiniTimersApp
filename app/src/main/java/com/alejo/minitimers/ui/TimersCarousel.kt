@@ -41,7 +41,7 @@ fun TimersCarousel(timers: List<Timer>, color: Color, enabled: Boolean) {
             TimerCard(timeText = timer.time, color = color)
         }
         item {
-            PlusIcon(enabled = false)
+            PlusIcon(enabled)
         }
     }
 }
@@ -85,20 +85,7 @@ fun TimerCard(timeText: Long, color: Color) {
 
 @Composable
 fun PlusIcon(enabled: Boolean) {
-    if (enabled) {
-        IconButton(
-            onClick = { onAddClick() }, // Acción para añadir temporizador
-            modifier = Modifier
-                .size(96.dp)
-                .background(Color.Gray, CircleShape)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Timer",
-                tint = Color.White
-            )
-        }
-    } else {
+    if(!enabled) {
         Box(
             modifier = Modifier
                 .height(124.dp)
@@ -117,6 +104,20 @@ fun PlusIcon(enabled: Boolean) {
                     tint = Color.White
                 )
             }
+        }
+    }
+    else {
+        IconButton(
+            onClick = { onAddClick() }, // Acción para añadir temporizador
+            modifier = Modifier
+                .size(96.dp)
+                .background(Color.Gray, CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Timer",
+                tint = Color.White
+            )
         }
     }
 }

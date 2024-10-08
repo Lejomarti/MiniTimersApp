@@ -63,13 +63,13 @@ fun MiniTimerScreen(
                 }
 
                 override fun onFinish() {
-                    if(upperList.isNotEmpty()){
-                        countDownTimer=null
+                    if (upperList.isNotEmpty()) {
+                        countDownTimer = null
                         onTimerFinish()
                         startTimer()
 
                     }
-                    if(upperList.isEmpty() && (timeRemaining < 100)) { //por aca hay un bug
+                    if (upperList.isEmpty() && (timeRemaining < 100)) { //por aca hay un bug
                         Log.d("alejoIsTalking", "Esto se llama solo si ya se acaba la lista")
                         timeRemaining = 0L
                         isRunning = false
@@ -128,6 +128,9 @@ fun MiniTimerScreen(
     }
 
     // Pantalla del temporizador
+
+    Scaffold(bottomBar = {    BottomNavBar()}) {
+        padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -140,7 +143,8 @@ fun MiniTimerScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         TimerRing(
-            progress = timeRemaining / (currentTimer?.time ?: 1).toFloat(), // Evitar división por cero
+            progress = timeRemaining / (currentTimer?.time
+                ?: 1).toFloat(), // Evitar división por cero
             timeText =
             when {
                 !wasInitialized -> formatTime(upperList.sumOf { it.time }) // Mostrar suma si no se ha inicializado
@@ -151,7 +155,7 @@ fun MiniTimerScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         //segundo carousel
-        TimersCarousel(timers = lowerList, color = Color.LightGray,enabled = false)
+        TimersCarousel(timers = lowerList, color = Color.LightGray, enabled = false)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
@@ -167,8 +171,7 @@ fun MiniTimerScreen(
                 onClick = {
                     if (isPaused) {
                         resumeTimer() // Llama a reanudar si está pausado
-                    }
-                    else {
+                    } else {
                         pauseTimer() // Pausa si está en ejecución
                     }
                 },
@@ -181,8 +184,11 @@ fun MiniTimerScreen(
                 Text(text = "Cancelar")
             }
         }
+
+
     }
-}
+
+}}
 
 @Composable
 fun TimerRing(progress: Float, timeText: String, additionalText: String) {
