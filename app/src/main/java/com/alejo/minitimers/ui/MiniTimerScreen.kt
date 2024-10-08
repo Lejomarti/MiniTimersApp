@@ -190,52 +190,7 @@ fun MiniTimerScreen(
 
 }}
 
-@Composable
-fun TimerRing(progress: Float, timeText: String, additionalText: String) {
-    val ringColor = MaterialTheme.colorScheme.primary
 
-    // Canvas para dibujar el anillo progresivo
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.size(300.dp) // Tamaño del anillo
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            // Anillo de fondo
-            drawArc(
-                color = Color.Gray,
-                startAngle = 270f,
-                sweepAngle = 360f,
-                useCenter = false,
-                style = Stroke(16.dp.toPx(), cap = StrokeCap.Round)
-            )
-
-            // Anillo de progreso
-            drawArc(
-                color = ringColor,
-                startAngle = 270f,
-                sweepAngle = 360f * progress, // Progreso en base al tiempo restante
-                useCenter = false,
-                style = Stroke(16.dp.toPx(), cap = StrokeCap.Round)
-            )
-        }
-
-        // Texto dentro del anillo
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = timeText,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.Black
-            )
-            Text(
-                text = additionalText,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
-        }
-    }
-}
 
 
 fun formatTime(timeMillis: Long): String {
