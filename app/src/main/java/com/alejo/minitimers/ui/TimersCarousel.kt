@@ -66,43 +66,6 @@ fun TimersCarousel(
 }
 
 @Composable
-fun TimerCard(timeText: Long, color: Color) {
-
-    Surface(
-        modifier = Modifier
-            .height(124.dp)
-            .width(96.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(96.dp)
-                    .padding(10.dp)
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    // Anillo de color sólido
-                    drawArc(
-                        color = color,
-                        startAngle = 0f,
-                        sweepAngle = 360f,
-                        useCenter = false,
-                        style = Stroke(18.dp.toPx()) // Grosor del anillo
-                    )
-                }
-            }
-            Text(
-                text = formatTime(timeText),
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
-    }
-}
-
-
-@Composable
 fun PlusIcon(enabled: Boolean, navController: NavController?) {
     if (!enabled) {
         Box(
@@ -125,6 +88,11 @@ fun PlusIcon(enabled: Boolean, navController: NavController?) {
             }
         }
     } else {
+        Box(
+            modifier = Modifier
+                .height(124.dp)
+                .width(96.dp)
+        ){
         IconButton(
             onClick = {
                 navController?.navigate(route = AppScreens.AddTimerScreen.route)
@@ -139,6 +107,7 @@ fun PlusIcon(enabled: Boolean, navController: NavController?) {
                 tint = Color.White
             )
         }
+        }
     }
 }
 
@@ -147,12 +116,13 @@ fun PlusIcon(enabled: Boolean, navController: NavController?) {
 @Composable
 fun MinitimersCarouselPreview() {
     MiniTimersTheme {
-        TimersCarousel(
-            timers = timersList,
-            color = MaterialTheme.colorScheme.primary,
-            enabled = true,
-            navController = null
-        )
+//        TimersCarousel(
+//            timers = timersList,
+//            color = MaterialTheme.colorScheme.primary,
+//            enabled = true,
+//            navController = null
+//        )
+        PlusIcon(enabled = true, navController = null)
     }
 }
 
