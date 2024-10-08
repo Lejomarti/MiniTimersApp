@@ -14,13 +14,14 @@ import androidx.navigation.NavController
 import com.alejo.minitimers.data.Timer
 import com.alejo.minitimers.data.timersList
 import com.alejo.minitimers.navigation.AppNavigation
+import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TimersCarousel
 import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
-fun MiniTimersScreen(navController:NavController) {
+fun MiniTimersScreen(navController: NavController) {
 //    val HardCodedTime = 10000L
 
     var wasInitialized by remember { mutableStateOf(false) }
@@ -129,67 +130,105 @@ fun MiniTimersScreen(navController:NavController) {
     // Pantalla del temporizador
 
     Scaffold(
-        topBar = { TopBar() }
-    ) {
-            paddingValues ->
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        topBar = { TopBar() },
+        bottomBar = { BottomNavBar() }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(bottom = 16.dp)
 
-    ) {
-        //primer carousel
-        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary, enabled = true, navController )
-        Spacer(modifier = Modifier.height(24.dp))
+        ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
 
-        TimerRing(
-            progress = timeRemaining / (currentTimer?.time
-                ?: 1).toFloat(), // Evitar división por cero
-            timeText =
-            when {
-                !wasInitialized -> formatTime(upperList.sumOf { it.time }) // Mostrar suma si no se ha inicializado
-                else -> formatTime(timeRemaining) // Mostrar tiempo restante si se ha inicializado
-            },
-            additionalText = "00:00:00" // Segundo texto
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        //segundo carousel
-        TimersCarousel(timers = lowerList, color = Color.LightGray, enabled = false,navController)
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
-                onClick = {
-                    if (!isRunning && !isPaused) startTimer()
-                },
-                enabled = !wasInitialized
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Iniciar")
+                //primer carousel
+                TimersCarousel(
+                    timers = upperList,
+                    MaterialTheme.colorScheme.primary,
+                    enabled = true,
+                    navController
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TimerRing(
+                    progress = timeRemaining / (currentTimer?.time
+                        ?: 1).toFloat(), // Evitar división por cero
+                    timeText =
+                    when {
+                        !wasInitialized -> formatTime(upperList.sumOf { it.time }) // Mostrar suma si no se ha inicializado
+                        else -> formatTime(timeRemaining) // Mostrar tiempo restante si se ha inicializado
+                    },
+                    additionalText = "00:00:00" // Segundo texto
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //segundo carousel
+                TimersCarousel(
+                    timers = lowerList,
+                    color = Color.LightGray,
+                    enabled = false,
+                    navController
+                )
             }
 
-            Button(
-                onClick = {
-                    if (isPaused) {
-                        resumeTimer() // Llama a reanudar si está pausado
-                    } else {
-                        pauseTimer() // Pausa si está en ejecución
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (!wasInitialized) {
+
+                    Button(
+                        modifier = Modifier.width(300.dp),
+                        onClick = {
+                            if (!isRunning && !isPaused) startTimer()
+                        },
+                        enabled = !wasInitialized
+                    ) {
+                        Text(text = "Iniciar")
                     }
-                },
-                enabled = isRunning || isPaused
-            ) {
-                Text(text = if (isPaused) "Reanudar" else "Pausar")
-            }
+                }
 
-            Button(onClick = { cancelTimer() }) {
-                Text(text = "Cancelar")
+                if (wasInitialized) {
+
+                    Button(
+                        modifier = Modifier.width(180.dp),
+                        onClick = {
+                            if (isPaused) {
+                                resumeTimer() // Llama a reanudar si está pausado
+                            } else {
+                                pauseTimer() // Pausa si está en ejecución
+                            }
+                        },
+                        enabled = isRunning || isPaused
+                    ) {
+                        Text(text = if (isPaused) "Reanudar" else "Pausar")
+                    }
+                }
+
+                if (wasInitialized) {
+
+                    Button(
+                        modifier = Modifier.width(180.dp),
+                        onClick = { cancelTimer() }) {
+                        Text(text = "Cancelar")
+                    }
+                }
             }
         }
-
-
     }
-}}
+}
+}
 
 fun formatTime(timeMillis: Long): String {
     val hours = (timeMillis / 1000) / 3600

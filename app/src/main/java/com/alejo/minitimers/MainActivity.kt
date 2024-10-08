@@ -33,16 +33,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MiniTimersApp() {
-    Scaffold(
-        bottomBar = { BottomNavBar() },
-    ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+//    Scaffold(
+//        bottomBar = { BottomNavBar() },
+//    ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
+//        Surface(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//        ) {
             AppNavigation()
-        }
-    }
+//        }
+//    }
 }
 
 @Preview(showBackground = true)
@@ -52,4 +53,3 @@ fun MinitimersAppPreview() {
         MiniTimersApp()
     }
 }
-//MiniTimerScreen()
