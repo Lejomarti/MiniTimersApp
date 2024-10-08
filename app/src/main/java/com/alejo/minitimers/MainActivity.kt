@@ -14,7 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alejo.minitimers.ui.MiniTimerScreen
+import com.alejo.minitimers.navigation.AppNavigation
+import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,29 +24,23 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MiniTimersTheme {
-                MiniTimerScreen()
+                MiniTimersApp()
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MiniTimersApp() {
     Scaffold(
-        topBar = {
-            androidx.compose.material3.TopAppBar(
-                title = { Text("Temporizador Programable") }
-            )
-        }
+        bottomBar = { BottomNavBar() },
     ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp), // Padding adicional
         ) {
-            MiniTimerScreen()
+            AppNavigation()
         }
     }
 }

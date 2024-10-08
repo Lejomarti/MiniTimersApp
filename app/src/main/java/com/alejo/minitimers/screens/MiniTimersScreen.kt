@@ -1,8 +1,7 @@
-package com.alejo.minitimers.ui
+package com.alejo.minitimers.screens
 
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,17 +9,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.alejo.minitimers.data.Timer
 import com.alejo.minitimers.data.timersList
+import com.alejo.minitimers.navigation.AppNavigation
+import com.alejo.minitimers.ui.TimerRing
+import com.alejo.minitimers.ui.TimersCarousel
+import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
-fun MiniTimerScreen(
-
-) {
+fun MiniTimersScreen(navController:NavController) {
 //    val HardCodedTime = 10000L
 
     var wasInitialized by remember { mutableStateOf(false) }
@@ -84,7 +84,6 @@ fun MiniTimerScreen(
 
     fun pauseTimer() {
         countDownTimer?.cancel()
-//        countDownTimer = null
         isRunning = false
         isPaused = true
     }
@@ -129,17 +128,20 @@ fun MiniTimerScreen(
 
     // Pantalla del temporizador
 
-    Scaffold(bottomBar = {    BottomNavBar()}) {
-        padding ->
+    Scaffold(
+        topBar = { TopBar() }
+    ) {
+            paddingValues ->
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top,
+
     ) {
         //primer carousel
-        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary, enabled = true)
+        TimersCarousel(timers = upperList, MaterialTheme.colorScheme.primary, enabled = true, navController )
         Spacer(modifier = Modifier.height(24.dp))
 
         TimerRing(
@@ -155,7 +157,7 @@ fun MiniTimerScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         //segundo carousel
-        TimersCarousel(timers = lowerList, color = Color.LightGray, enabled = false)
+        TimersCarousel(timers = lowerList, color = Color.LightGray, enabled = false,navController)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
@@ -187,11 +189,7 @@ fun MiniTimerScreen(
 
 
     }
-
 }}
-
-
-
 
 fun formatTime(timeMillis: Long): String {
     val hours = (timeMillis / 1000) / 3600
@@ -204,6 +202,6 @@ fun formatTime(timeMillis: Long): String {
 @Composable
 fun MinitimerScreenPreview() {
     MiniTimersTheme {
-        MiniTimerScreen()
+        AppNavigation()
     }
 }
