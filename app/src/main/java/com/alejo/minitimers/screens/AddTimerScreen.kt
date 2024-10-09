@@ -1,6 +1,7 @@
 package com.alejo.minitimers.screens
 
 import android.annotation.SuppressLint
+import android.widget.NumberPicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -12,11 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.PlusIcon
 import com.alejo.minitimers.ui.TimerCard
+import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,92 +50,145 @@ fun AddTimerScreen(navController: NavController?) {
 
 @Composable
 fun AddTimerContent(navController: NavController?) {
+
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Hora deslizable
-        TimeSelector()
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            TimeSelector()
+            Spacer(modifier = Modifier.height(16.dp))
+            TimerList()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-        // Lista de temporizadores
-        TimerList()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Botones Añadir y Cancelar
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = { /* Acción de Añadir */ }) {
+            Button(
+                modifier = Modifier.width(180.dp),
+                onClick = { /* Acción de Añadir */ }) {
                 Text(text = "Añadir")
             }
-            Button(onClick = { navController?.popBackStack() }) {
+            Button(
+                modifier = Modifier.width(180.dp),
+                onClick = { navController?.popBackStack() }) {
                 Text(text = "Cancelar")
             }
         }
     }
 }
 
+
 @Composable
 fun TimeSelector() {
-    // Aquí podrías usar sliders o crear tu propio seleccionador de horas
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        // Aquí podrías usar un NumberPicker o tu propio componente personalizado
-        Text(text = "00", fontSize = 36.sp)
-        Text(
-            text = "hours",
-            modifier = Modifier.align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.labelSmall
-        )
+    var selectedHour by remember { mutableStateOf(0) }
+    var selectedMinute by remember { mutableStateOf(0) }
+    var selectedSecond by remember { mutableStateOf(10) }
 
-        Text(text = "00", fontSize = 36.sp)
-        Text(
-            text = "mins",
-            modifier = Modifier.align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.labelSmall
-        )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Text(text = "00", fontSize = 36.sp)
-        Text(
-            text = "secs",
-            modifier = Modifier.align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.labelSmall
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            NumberPickerComponent(
+                minValue = 0,
+                maxValue = 99,
+                selectedValue = selectedHour,
+                onValueChange = { newValue ->
+                    selectedHour = newValue
+                },
+                text = "Hours"
+            )
+            NumberPickerComponent(
+                minValue = 0,
+                maxValue = 59,
+                selectedValue = selectedMinute,
+                onValueChange = { newValue ->
+                    selectedMinute = newValue
+                },
+                text = "Min"
+            )
+            NumberPickerComponent(
+                minValue = 0,
+                maxValue = 59,
+                selectedValue = selectedSecond,
+                onValueChange = { newValue ->
+                    selectedSecond = newValue
+                },
+                text = "Sec"
+            )
+
+
+        }
+    }
+}
+
+
+@Composable
+fun NumberPickerComponent(
+    minValue: Int,
+    maxValue: Int,
+    selectedValue: Int,
+    onValueChange: (Int) -> Unit,
+    text: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        AndroidView(
+            modifier = Modifier, // Puedes agregar más modificaciones como el tamaño
+            factory = { context ->
+                NumberPicker(context).apply {
+                    this.minValue = minValue
+                    this.maxValue = maxValue
+                    this.value = selectedValue
+                    this.wrapSelectorWheel = true // Habilitar el scroll circular
+                    setOnValueChangedListener { _, _, newVal ->
+                        onValueChange(newVal)
+                    }
+                }
+            },
+            update = { picker ->
+                // Esto se asegura de que se actualice si cambia el valor externamente
+                picker.value = selectedValue
+            }
         )
+        Text(text = text, style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 fun TimerList() {
-    // Aquí puedes iterar sobre una lista de temporizadores
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3), // Establece 3 columnas
+        columns = GridCells.Fixed(3),
         modifier = Modifier
+//            .fillMaxWidth()
+//            .heightIn(max = 300.dp)
             .fillMaxSize()
-            .padding(16.dp, 16.dp, 0.dp), // Ajusta el padding si es necesario
-        contentPadding = PaddingValues(8.dp), // Padding dentro de la grilla
-        verticalArrangement = Arrangement.spacedBy(16.dp), // Espacio vertical entre los elementos
-        horizontalArrangement = Arrangement.spacedBy(16.dp) // Espacio horizontal entre los elementos
+            .padding(16.dp, 0.dp, 16.dp, 0.dp),// Hacemos que tome solo el espacio necesario
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(5) { index -> // Reemplaza con tu lista real
             TimerCard(timeText = 5000L, MaterialTheme.colorScheme.primary)
         }
         item {
-            Box(contentAlignment = Alignment.TopCenter){
-            PlusIcon(enabled = true, navController = null) }
+            Box(contentAlignment = Alignment.TopCenter) {
+                PlusIcon(enabled = true, navController = null)
             }
+        }
     }
 }
 
 @Preview
 @Composable
 fun PreviewAddTimerScreen() {
-    AddTimerScreen(navController = null)
+    MiniTimersTheme{
+        AddTimerScreen(navController = null)
+    }
 }
