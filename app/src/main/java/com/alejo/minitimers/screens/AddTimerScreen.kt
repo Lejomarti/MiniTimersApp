@@ -15,12 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.alejo.minitimers.data.personalizedtimersList
 import com.alejo.minitimers.ui.BottomNavBar
+import com.alejo.minitimers.ui.NumberPickerComponent
 import com.alejo.minitimers.ui.PlusIcon
+import com.alejo.minitimers.ui.TimeSelector
 import com.alejo.minitimers.ui.TimerCard
+import com.alejo.minitimers.ui.TimerList
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTimerScreen(navController: NavController?) {
@@ -50,6 +53,16 @@ fun AddTimerScreen(navController: NavController?) {
 
 @Composable
 fun AddTimerContent(navController: NavController?) {
+    var personalizedTimers by remember { mutableStateOf(personalizedtimersList.toMutableList()) }
+    var selectedHour by remember { mutableStateOf(0) }
+    var selectedMinute by remember { mutableStateOf(0) }
+    var selectedSecond by remember { mutableStateOf(0) }
+
+    fun setTimeFromMillis(millis: Long) {
+        selectedHour = (millis / 3600_000).toInt()
+        selectedMinute = ((millis % 3600_000) / 60_000).toInt()
+        selectedSecond = ((millis % 60_000) / 1_000).toInt()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -58,15 +71,27 @@ fun AddTimerContent(navController: NavController?) {
     ) {
 
         Column(modifier = Modifier.weight(1f)) {
-            TimeSelector()
+            TimeSelector(selectedHour = selectedHour,
+                onHourChange = { selectedHour = it },
+                selectedMinute = selectedMinute,
+                onMinuteChange = { selectedMinute = it },
+                selectedSecond = selectedSecond,
+                onSecondChange = { selectedSecond = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            TimerList()
+            TimerList(
+                personalizedTimers = personalizedTimers,
+                onTimerClick = { selectedTimeInMillis ->
+                    setTimeFromMillis(selectedTimeInMillis)
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
         }
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
@@ -84,111 +109,10 @@ fun AddTimerContent(navController: NavController?) {
 }
 
 
-@Composable
-fun TimeSelector() {
-    var selectedHour by remember { mutableStateOf(0) }
-    var selectedMinute by remember { mutableStateOf(0) }
-    var selectedSecond by remember { mutableStateOf(10) }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            NumberPickerComponent(
-                minValue = 0,
-                maxValue = 99,
-                selectedValue = selectedHour,
-                onValueChange = { newValue ->
-                    selectedHour = newValue
-                },
-                text = "Hours"
-            )
-            NumberPickerComponent(
-                minValue = 0,
-                maxValue = 59,
-                selectedValue = selectedMinute,
-                onValueChange = { newValue ->
-                    selectedMinute = newValue
-                },
-                text = "Min"
-            )
-            NumberPickerComponent(
-                minValue = 0,
-                maxValue = 59,
-                selectedValue = selectedSecond,
-                onValueChange = { newValue ->
-                    selectedSecond = newValue
-                },
-                text = "Sec"
-            )
-
-
-        }
-    }
-}
-
-
-@Composable
-fun NumberPickerComponent(
-    minValue: Int,
-    maxValue: Int,
-    selectedValue: Int,
-    onValueChange: (Int) -> Unit,
-    text: String
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        AndroidView(
-            modifier = Modifier, // Puedes agregar más modificaciones como el tamaño
-            factory = { context ->
-                NumberPicker(context).apply {
-                    this.minValue = minValue
-                    this.maxValue = maxValue
-                    this.value = selectedValue
-                    this.wrapSelectorWheel = true // Habilitar el scroll circular
-                    setOnValueChangedListener { _, _, newVal ->
-                        onValueChange(newVal)
-                    }
-                }
-            },
-            update = { picker ->
-                // Esto se asegura de que se actualice si cambia el valor externamente
-                picker.value = selectedValue
-            }
-        )
-        Text(text = text, style = MaterialTheme.typography.labelSmall)
-    }
-}
-
-@Composable
-fun TimerList() {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier
-//            .fillMaxWidth()
-//            .heightIn(max = 300.dp)
-            .fillMaxSize()
-            .padding(16.dp, 0.dp, 16.dp, 0.dp),// Hacemos que tome solo el espacio necesario
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(5) { index -> // Reemplaza con tu lista real
-            TimerCard(timeText = 5000L, MaterialTheme.colorScheme.primary)
-        }
-        item {
-            Box(contentAlignment = Alignment.TopCenter) {
-                PlusIcon(enabled = true, navController = null)
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun PreviewAddTimerScreen() {
-    MiniTimersTheme{
+    MiniTimersTheme {
         AddTimerScreen(navController = null)
     }
 }

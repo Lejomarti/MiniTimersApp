@@ -1,6 +1,7 @@
 package com.alejo.minitimers.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,12 +21,20 @@ import androidx.compose.ui.unit.dp
 import com.alejo.minitimers.screens.formatTime
 
 @Composable
-fun TimerCard(timeText: Long, color: Color) {
+fun TimerCard(timeText: Long, color: Color , onClick:(() -> Unit)?) {
 
     Surface(
         modifier = Modifier
             .height(124.dp)
             .width(96.dp)
+            .let { modifier ->
+                if (onClick != null) {
+                    modifier.clickable { onClick() }
+                } else {
+                    modifier
+                }
+            },
+        color = Color.Transparent
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
