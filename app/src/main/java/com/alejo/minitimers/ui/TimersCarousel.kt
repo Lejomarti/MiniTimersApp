@@ -36,7 +36,7 @@ fun onAddClick() {
 
 @Composable
 fun TimersCarousel(
-    timers: List<Timer>,
+    timers: List<Long>,
     color: Color,
     enabled: Boolean,
     navController: NavController?,
@@ -52,8 +52,8 @@ fun TimersCarousel(
                 .height(60.dp))
         }
 
-        items(timers) { timer ->
-            TimerCard(timeText = timer.time, color = color, onClick = onClick)
+        items(timers) { time ->
+            TimerCard(timeText = time, color = color, onClick = onClick)
         }
         item {
             PlusIcon(enabled, navController)
