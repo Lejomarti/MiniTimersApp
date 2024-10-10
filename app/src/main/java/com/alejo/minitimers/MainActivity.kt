@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppNavigation
 import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
@@ -22,9 +23,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val timersDataStore = TimersDataStore(this)
         setContent {
             MiniTimersTheme {
-                MiniTimersApp()
+                MiniTimersApp(timersDataStore)
             }
         }
     }
@@ -32,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MiniTimersApp() {
+fun MiniTimersApp(timersDataStore: TimersDataStore) {
 //    Scaffold(
 //        bottomBar = { BottomNavBar() },
 //    ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
@@ -41,7 +43,7 @@ fun MiniTimersApp() {
 //                .fillMaxSize()
 //                .padding(paddingValues)
 //        ) {
-            AppNavigation()
+            AppNavigation(timersDataStore )
 //        }
 //    }
 }
@@ -50,6 +52,6 @@ fun MiniTimersApp() {
 @Composable
 fun MinitimersAppPreview() {
     MiniTimersTheme {
-        MiniTimersApp()
+//        MiniTimersApp(timersDataStore)
     }
 }

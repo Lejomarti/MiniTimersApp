@@ -55,6 +55,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation (libs.dev.snapper)
 
+    implementation(libs.androidx.datastore.preferences)
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,10 +1,6 @@
 package com.alejo.minitimers.screens
 
-import android.annotation.SuppressLint
-import android.widget.NumberPicker
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,20 +9,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.data.personalizedtimersList
 import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.NumberPickerComponent
-import com.alejo.minitimers.ui.PlusIcon
 import com.alejo.minitimers.ui.TimeSelector
-import com.alejo.minitimers.ui.TimerCard
 import com.alejo.minitimers.ui.TimerList
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTimerScreen(navController: NavController?) {
+fun AddTimerScreen(navController: NavController?,timersDataStore:TimersDataStore) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -46,13 +40,13 @@ fun AddTimerScreen(navController: NavController?) {
                 .padding(bottom = 16.dp)
 
         ) {
-            AddTimerContent(navController)
+            AddTimerContent(navController,timersDataStore)
         }
     }
 }
 
 @Composable
-fun AddTimerContent(navController: NavController?) {
+fun AddTimerContent(navController: NavController?, timersDataStore: TimersDataStore) {
     var personalizedTimers by remember { mutableStateOf(personalizedtimersList.toMutableList()) }
     var selectedHour by remember { mutableStateOf(0) }
     var selectedMinute by remember { mutableStateOf(0) }
@@ -96,7 +90,14 @@ fun AddTimerContent(navController: NavController?) {
         ) {
             Button(
                 modifier = Modifier.width(180.dp),
-                onClick = { /* Acción de Añadir */ }) {
+                onClick = {
+                    val totalMillis = (selectedHour * 3600 + selectedMinute * 60 + selectedSecond) * 1000L
+
+                    runBlocking {
+                        timersDataStore.saveTimer(totalMillis)
+                    }
+                    navController?.popBackStack()
+                }) {
                 Text(text = "Añadir")
             }
             Button(
@@ -113,6 +114,6 @@ fun AddTimerContent(navController: NavController?) {
 @Composable
 fun PreviewAddTimerScreen() {
     MiniTimersTheme {
-        AddTimerScreen(navController = null)
+//        AddTimerScreen(navController = null)
     }
 }

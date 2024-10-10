@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.Timer
+import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.data.timersList
 import com.alejo.minitimers.navigation.AppNavigation
 import com.alejo.minitimers.ui.BottomNavBar
@@ -21,8 +22,9 @@ import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 @Composable
-fun MiniTimersScreen(navController: NavController) {
+fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataStore) {
 //    val HardCodedTime = 10000L
+    val timers by timersDataStore.timersFlow.collectAsState(initial = emptyList())
 
     var wasInitialized by remember { mutableStateOf(false) }
     var timeRemaining by remember { mutableStateOf(0L) }
@@ -153,7 +155,7 @@ fun MiniTimersScreen(navController: NavController) {
             ) {
                 //primer carousel
                 TimersCarousel(
-                    timers = upperList,
+                    timers = timers.map{Timer(it)},
                     MaterialTheme.colorScheme.primary,
                     enabled = true,
                     navController
@@ -241,6 +243,6 @@ fun formatTime(timeMillis: Long): String {
 @Composable
 fun MinitimerScreenPreview() {
     MiniTimersTheme {
-        AppNavigation()
+//        AppNavigation()
     }
 }
