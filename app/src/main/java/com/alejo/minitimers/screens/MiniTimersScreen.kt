@@ -1,5 +1,8 @@
 package com.alejo.minitimers.screens
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -10,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +26,7 @@ import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TimersCarousel
 import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
+import com.alejo.minitimers.utils.SoundManager
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -44,6 +49,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     var isChronoRunning by remember { mutableStateOf(false) }
     var chronoTimer: CountDownTimer? by remember { mutableStateOf(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val soundManager = remember { SoundManager(context) }
 
     // Almacenar el flujo en upperList
     LaunchedEffect(timers) {
@@ -99,6 +106,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
             lowerList.add(it)
             currentTimer = null
 
+            soundManager.playSound()
         }
     }
 
