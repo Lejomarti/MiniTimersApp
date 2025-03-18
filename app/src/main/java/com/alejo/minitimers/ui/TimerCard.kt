@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.alejo.minitimers.screens.formatTime
 
 @Composable
-fun TimerCard(timeText: Long, color: Color , onClick:(() -> Unit)?) {
+fun TimerCard(timeText: Long, color: Color , onClick:(() -> Unit)? = null) {
 
     Surface(
         modifier = Modifier

@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.screens.AddTimerScreen
 import com.alejo.minitimers.screens.MiniTimersScreen
+import com.alejo.minitimers.screens.TimerDetailsScreen
 
 @Composable
 fun AppNavigation(timersDataStore: TimersDataStore){
@@ -17,6 +18,9 @@ fun AppNavigation(timersDataStore: TimersDataStore){
         }
         composable(route = AppScreens.AddTimerScreen.route){
             AddTimerScreen(navController,timersDataStore)
+        }
+        composable(route = AppScreens.TimerDetailsScreen.route){
+            TimerDetailsScreen(navController)
         }
     }
 }

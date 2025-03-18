@@ -40,7 +40,7 @@ fun TimersCarousel(
     color: Color,
     enabled: Boolean,
     navController: NavController?,
-    onClick: (() -> Unit)? = null
+    onClick:  (Long) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -53,7 +53,7 @@ fun TimersCarousel(
         }
 
         items(timers) { time ->
-            TimerCard(timeText = time, color = color, onClick = onClick)
+            TimerCard(timeText = time, color = color, onClick = { onClick(time) })
         }
         item {
             PlusIcon(enabled, navController)

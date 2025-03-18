@@ -16,10 +16,11 @@ class TimersDataStore(private val context: Context) {
     private val TIMER_LIST_KEY = longPreferencesKey("timer_list")
 
     // Recuperar la lista de temporizadores guardados
-    val timersFlow: Flow<List<Long>> = context.dataStore.data
+    val timersFlow: Flow<List<Pair<String,Long>>> = context.dataStore.data
         .map { preferences ->
-            preferences.asMap().filter { it.key.name.startsWith("timer_") }
-                .map { it.value as Long }
+            preferences.asMap()
+                .filter { it.key.name.startsWith("timer_") }
+                .map { it.key.name to (it.value as Long) }
         }
 
     // Guardar un nuevo temporizador
@@ -31,10 +32,9 @@ class TimersDataStore(private val context: Context) {
     }
 
     // Eliminar un temporizador
-    suspend fun removeTimer(time: Long) {
+    suspend fun removeTimer(key: String) {
         context.dataStore.edit { preferences ->
-            preferences.asMap().filter { it.value == time }
-                .keys.forEach { preferences.remove(it) }
+            preferences.remove(longPreferencesKey(key))
         }
     }
 
