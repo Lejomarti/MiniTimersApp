@@ -20,13 +20,13 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTimerScreen(navController: NavController?,timersDataStore:TimersDataStore) {
+fun AddTimerScreen(navController: NavController,timersDataStore:TimersDataStore) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Añadir temporizador") },
                 navigationIcon = {
-                    IconButton(onClick = { navController?.popBackStack() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -46,7 +46,7 @@ fun AddTimerScreen(navController: NavController?,timersDataStore:TimersDataStore
 }
 
 @Composable
-fun AddTimerContent(navController: NavController?, timersDataStore: TimersDataStore) {
+fun AddTimerContent(navController: NavController, timersDataStore: TimersDataStore) {
     var personalizedTimers by remember { mutableStateOf(personalizedtimersList.toMutableList()) }
     var selectedHour by remember { mutableStateOf(0) }
     var selectedMinute by remember { mutableStateOf(0) }
@@ -96,13 +96,13 @@ fun AddTimerContent(navController: NavController?, timersDataStore: TimersDataSt
                     runBlocking {
                         timersDataStore.saveTimer(totalMillis)
                     }
-                    navController?.popBackStack()
+                    navController.popBackStack()
                 }) {
                 Text(text = "Añadir")
             }
             Button(
                 modifier = Modifier.width(180.dp),
-                onClick = { navController?.popBackStack() }) {
+                onClick = { navController.popBackStack() }) {
                 Text(text = "Cancelar")
             }
         }

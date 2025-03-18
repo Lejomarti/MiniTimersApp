@@ -37,4 +37,12 @@ class TimersDataStore(private val context: Context) {
                 .keys.forEach { preferences.remove(it) }
         }
     }
+
+    suspend fun removeAllTimers (){
+        context.dataStore.edit { preferences ->
+            preferences.asMap().keys
+                .filter { it.name.startsWith("timer_") }
+                .forEach { preferences.remove(it) }
+        }
+    }
 }

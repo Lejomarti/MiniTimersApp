@@ -5,9 +5,10 @@ data class Timer(
 )
 
 val timersList = listOf(
-    Timer(3_000L),
-    Timer(4_000L),
-    Timer(10_000L),
-    Timer(15_000L),
     Timer(5_000L),
+    Timer(15_000L),
+    Timer(30_000L),
+    Timer(60_000L),
+    Timer(120_000L),
+    Timer(300_000L),
 )

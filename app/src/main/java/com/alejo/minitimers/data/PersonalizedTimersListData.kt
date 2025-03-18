@@ -5,9 +5,10 @@ data class PersonalizedTimer(
 )
 
 val personalizedtimersList = listOf(
-    PersonalizedTimer(3_000L),
-    PersonalizedTimer(40_000L),
-    PersonalizedTimer(180_000L),
-    PersonalizedTimer(300_000L),
     PersonalizedTimer(5_000L),
+    PersonalizedTimer(15_000L),
+    PersonalizedTimer(30_000L),
+    PersonalizedTimer(60_000L),
+    PersonalizedTimer(120_000L),
+    PersonalizedTimer(300_000L),
 )

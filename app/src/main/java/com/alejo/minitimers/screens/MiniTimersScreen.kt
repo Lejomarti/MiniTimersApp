@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.alejo.minitimers.data.Timer
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.data.timersList
@@ -20,15 +22,18 @@ import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TimersCarousel
 import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataStore) {
     val timers by timersDataStore.timersFlow.collectAsState(initial = emptyList())
 
-    var wasInitialized by remember { mutableStateOf(false) }
-    var timeRemaining by remember { mutableStateOf(0L) }
-    var isRunning by remember { mutableStateOf(false) }
-    var isPaused by remember { mutableStateOf(false) }
+    var wasInitialized by rememberSaveable { mutableStateOf(false) }
+    var timeRemaining by rememberSaveable { mutableStateOf(0L) }
+    var isRunning by rememberSaveable { mutableStateOf(false) }
+    var isPaused by rememberSaveable { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
 
     val upperList = remember { mutableStateListOf<Long>() }
@@ -38,6 +43,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     var elapsedTime by remember { mutableStateOf(0L) } // Tiempo del cronómetro
     var isChronoRunning by remember { mutableStateOf(false) }
     var chronoTimer: CountDownTimer? by remember { mutableStateOf(null) }
+    val scope = rememberCoroutineScope()
 
     // Almacenar el flujo en upperList
     LaunchedEffect(timers) {
@@ -231,11 +237,27 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     )
                 }
 
+
+                Button(
+                    modifier = Modifier.width(300.dp),
+                    onClick = {
+                        scope.launch {
+                            timersDataStore.removeAllTimers()
+                        }
+                        cancelChrono()
+                    },
+                ) {
+                    Text(text = "Eliminar todo")
+                }
+
+                //botones inferiores
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+
+
                     if (!wasInitialized) {
 
                         Button(
@@ -298,7 +320,6 @@ fun formatTime(timeMillis: Long): String {
 @Preview(showBackground = true)
 @Composable
 fun MinitimerScreenPreview() {
-    MiniTimersTheme {
-//        AppNavigation()
-    }
+    val navController = rememberNavController()
+    MiniTimersScreen(navController,TimersDataStore(navController.context))
 }
