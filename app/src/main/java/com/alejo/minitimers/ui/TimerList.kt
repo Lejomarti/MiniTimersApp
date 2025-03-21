@@ -12,11 +12,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alejo.minitimers.data.PersonalizedTimer
 
 @Composable
-fun TimerList(personalizedTimers: List<PersonalizedTimer>, onTimerClick: (Long) -> Unit) {
+fun TimerList(personalizedTimers: List<PersonalizedTimer>, onTimerClick: (Long) -> Unit,
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = Modifier
@@ -30,12 +32,19 @@ fun TimerList(personalizedTimers: List<PersonalizedTimer>, onTimerClick: (Long) 
             TimerCard(
                 timeText = timer.personalizedTime,
                 color = MaterialTheme.colorScheme.primary,
-                onClick = {onTimerClick(timer.personalizedTime)})
+                onClick = { onTimerClick(timer.personalizedTime) },
+//                navController = navController
+            )
         }
         item {
             Box(contentAlignment = Alignment.TopCenter) {
-                PlusIcon(enabled = true, navController = null)
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewTimerList(){
+    TimerList(personalizedTimers = listOf(), onTimerClick = {})
 }

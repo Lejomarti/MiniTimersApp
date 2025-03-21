@@ -1,8 +1,5 @@
 package com.alejo.minitimers.screens
 
-import android.content.Context
-import android.media.AudioAttributes
-import android.media.SoundPool
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -17,17 +14,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.alejo.minitimers.data.Timer
 import com.alejo.minitimers.data.TimersDataStore
-import com.alejo.minitimers.data.timersList
-import com.alejo.minitimers.navigation.AppNavigation
+import com.alejo.minitimers.navigation.AppScreens
 import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TimersCarousel
 import com.alejo.minitimers.ui.TopBar
-import com.alejo.minitimers.ui.theme.MiniTimersTheme
 import com.alejo.minitimers.utils.SoundManager
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -76,8 +69,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
     // Función para pausar el cronómetro
     fun pauseChrono() {
-        chronoTimer?.cancel() // Detener el temporizador
-        isChronoRunning = false // Actualizar el estado
+        chronoTimer?.cancel()
+        isChronoRunning = false
     }
 
     // Función para reanudar el cronómetro
@@ -118,8 +111,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
         if (countDownTimer == null && upperList.isNotEmpty()) {
             wasInitialized = true
-            currentTimer = upperList.map{it.second}.first() // Tomar el primer valor de upperList
-            timeRemaining = currentTimer!! // Asignar el tiempo del temporizador actual
+            currentTimer = upperList.map{it.second}.first()
+            timeRemaining = currentTimer!!
             upperList.removeAt(0)
 
             countDownTimer = object : CountDownTimer(timeRemaining, interval) {
@@ -176,7 +169,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                 }
             }.start()
             isRunning = true
-            isPaused = false // Cambia a estado de ejecución
+            isPaused = false
         }
     }
 
@@ -192,7 +185,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     }
 
     // Pantalla del temporizador
-
     Scaffold(
         topBar = { TopBar() },
         bottomBar = { BottomNavBar() }
@@ -225,7 +217,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             val keyToDelete = upperList.find { it.second == selectedTime }?.first // ✅ Obtener la clave correspondiente
                             keyToDelete?.let { key ->
                                 Log.d("alejoIsTalking", "Se ha pulsado en $key")
-                                scope.launch { timersDataStore.removeTimer(key) }
+//                                scope.launch { timersDataStore.removeTimer(key) }
+                                navController.navigate(AppScreens.TimerDetailsScreen.createRoute(key))
                             }
                              }
                     )
@@ -233,11 +226,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
                     TimerRing(
                         progress = timeRemaining / (currentTimer
-                            ?: 1).toFloat(), // Evitar división por cero
+                            ?: 1).toFloat(),
                         timeText =
                         when {
-                            !wasInitialized -> formatTime(upperList.sumOf { it.second }) // Mostrar suma si no se ha inicializado
-                            else -> formatTime(timeRemaining) // Mostrar tiempo restante si se ha inicializado
+                            !wasInitialized -> formatTime(upperList.sumOf { it.second })
+                            else -> formatTime(timeRemaining)
                         },
                         additionalText = formatTime(elapsedTime) // Segundo texto
                     )

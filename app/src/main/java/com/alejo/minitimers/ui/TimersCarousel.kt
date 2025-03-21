@@ -1,6 +1,5 @@
 package com.alejo.minitimers.ui
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,23 +10,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.alejo.minitimers.data.Timer
-import com.alejo.minitimers.data.timersList
-import com.alejo.minitimers.navigation.AppNavigation
 import com.alejo.minitimers.navigation.AppScreens
-import com.alejo.minitimers.screens.formatTime
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 fun onAddClick() {
@@ -67,7 +57,10 @@ fun TimersCarousel(
 }
 
 @Composable
-fun PlusIcon(enabled: Boolean, navController: NavController?) {
+fun PlusIcon(
+    enabled: Boolean, 
+    navController: NavController?
+    ){
     if (!enabled) {
         Box(
             modifier = Modifier
@@ -97,7 +90,7 @@ fun PlusIcon(enabled: Boolean, navController: NavController?) {
         IconButton(
             onClick = {
                 navController?.navigate(route = AppScreens.AddTimerScreen.route)
-            }, // Acción para añadir temporizador
+            },
             modifier = Modifier
                 .size(96.dp)
                 .background(Color.Gray, CircleShape)
@@ -123,7 +116,10 @@ fun MinitimersCarouselPreview() {
 //            enabled = true,
 //            navController = null
 //        )
-        PlusIcon(enabled = true, navController = null)
+        PlusIcon(
+            enabled = true,
+            navController = null,
+        )
     }
 }
 

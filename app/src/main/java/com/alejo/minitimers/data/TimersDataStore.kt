@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 
@@ -32,9 +33,9 @@ class TimersDataStore(private val context: Context) {
     }
 
     // Eliminar un temporizador
-    suspend fun removeTimer(key: String) {
+    suspend fun removeTimer(timerId: String) {
         context.dataStore.edit { preferences ->
-            preferences.remove(longPreferencesKey(key))
+            preferences.remove(longPreferencesKey(timerId))
         }
     }
 
@@ -44,5 +45,10 @@ class TimersDataStore(private val context: Context) {
                 .filter { it.name.startsWith("timer_") }
                 .forEach { preferences.remove(it) }
         }
+    }
+
+    suspend fun getTimerById(timerId: String): Long? {
+        val preferences = context.dataStore.data.first()
+        return preferences[longPreferencesKey(timerId)]
     }
 }

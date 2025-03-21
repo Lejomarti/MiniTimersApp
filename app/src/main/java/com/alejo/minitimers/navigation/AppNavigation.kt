@@ -19,8 +19,9 @@ fun AppNavigation(timersDataStore: TimersDataStore){
         composable(route = AppScreens.AddTimerScreen.route){
             AddTimerScreen(navController,timersDataStore)
         }
-        composable(route = AppScreens.TimerDetailsScreen.route){
-            TimerDetailsScreen(navController)
+        composable(route = AppScreens.TimerDetailsScreen.route){backStackEntry ->
+            val timerId = backStackEntry.arguments?.getString("timerId")
+            TimerDetailsScreen(navController, timerId, timersDataStore)
         }
     }
 }

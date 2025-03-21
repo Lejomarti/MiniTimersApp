@@ -2,7 +2,7 @@ package com.alejo.minitimers.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +27,7 @@ fun AddTimerScreen(navController: NavController,timersDataStore:TimersDataStore)
                 title = { Text("Añadir temporizador") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -47,7 +47,7 @@ fun AddTimerScreen(navController: NavController,timersDataStore:TimersDataStore)
 
 @Composable
 fun AddTimerContent(navController: NavController, timersDataStore: TimersDataStore) {
-    var personalizedTimers by remember { mutableStateOf(personalizedtimersList.toMutableList()) }
+    val personalizedTimers by remember { mutableStateOf(personalizedtimersList.toMutableList()) }
     var selectedHour by remember { mutableStateOf(0) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedSecond by remember { mutableStateOf(0) }
