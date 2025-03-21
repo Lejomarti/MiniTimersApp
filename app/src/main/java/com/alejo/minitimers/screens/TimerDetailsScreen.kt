@@ -3,6 +3,7 @@ package com.alejo.minitimers.screens
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.ui.BottomNavBar
+import com.alejo.minitimers.ui.TimeSelector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -69,7 +71,9 @@ fun TimerDetailsScreen(
                 .padding(bottom = 16.dp)
 
         ) {
-            EditTimerContent(navController, timerId, timerValue,timersDataStore, scope)
+            timerValue?.let{
+                EditTimerContent(navController, timerId, timerValue!!,timersDataStore, scope)
+            }
         }
     }
 }
@@ -78,41 +82,63 @@ fun TimerDetailsScreen(
 fun EditTimerContent(
     navController: NavController,
     timerId: String?,
-    timerValue: Long?,
+    initialTime: Long?,
     timersDataStore: TimersDataStore,
     scope: CoroutineScope
 ) {
+
+    var selectedHour by remember { mutableStateOf((initialTime!! / 3600_000).toInt()) }
+    var selectedMinute by remember { mutableStateOf(((initialTime!! % 3600_000) / 60_000).toInt()) }
+    var selectedSecond by remember { mutableStateOf(((initialTime!! % 60_000) / 1_000).toInt()) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = if (timerValue != null) {
-                "Tiempo guardado: ${formatTime(timerValue)}"
-            } else {
-                "Cargando..."
-            }
+        Text("Tiempo guardado: ${formatTime(initialTime!!)}")
+
+        TimeSelector(
+            selectedHour = selectedHour,
+            onHourChange = { selectedHour = it },
+            selectedMinute = selectedMinute,
+            onMinuteChange = { selectedMinute = it },
+            selectedSecond = selectedSecond,
+            onSecondChange = { selectedSecond = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            colors = ButtonDefaults.buttonColors(Color.Red),
-            onClick = {
-                timerId?.let { id ->
-                    scope.launch {
-                        Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
-                        timersDataStore.removeTimer(id)
-                        navController.popBackStack()
-                    }
-
-                }
+Row(){
+    Button(onClick = {
+        val newTime = (selectedHour * 3600_000L + selectedMinute * 60_000L + selectedSecond * 1_000L)
+        timerId?.let { id ->
+            scope.launch {
+                timersDataStore.updateTimer(id, newTime) // Guardar el nuevo tiempo
+                navController.popBackStack() // Volver a la pantalla anterior
             }
-
-        ) {
-            Text("Eliminar Temporizador")
         }
+
+    }){
+        Text("Guardar")
+    }
+
+    Button(
+        colors = ButtonDefaults.buttonColors(Color.Red),
+        onClick = {
+            timerId?.let { id ->
+                scope.launch {
+                    Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
+                    timersDataStore.removeTimer(id)
+                    navController.popBackStack()
+                }
+
+            }
+        }
+
+    ) {
+        Text("Eliminar Temporizador")
+    }
+}
     }
 }

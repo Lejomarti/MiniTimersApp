@@ -51,4 +51,12 @@ class TimersDataStore(private val context: Context) {
         val preferences = context.dataStore.data.first()
         return preferences[longPreferencesKey(timerId)]
     }
+
+
+    suspend fun updateTimer(timerId: String, newTime: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[longPreferencesKey(timerId)] = newTime
+        }
+    }
+
 }
