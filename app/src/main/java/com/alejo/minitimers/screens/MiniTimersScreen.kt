@@ -34,7 +34,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     var isPaused by rememberSaveable { mutableStateOf(false) }
     var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
 
-    val upperList = remember { mutableStateListOf<Pair<String, Long>>()  }
+    val upperList = remember { mutableStateListOf<Pair<String, Long>>() }
     val lowerList = remember { mutableStateListOf<Long>() }
     var currentTimer by remember { mutableStateOf<Long?>(null) }
 
@@ -54,7 +54,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     fun startChrono() {
         if (!isChronoRunning) {
             isChronoRunning = true
-            chronoTimer = object : CountDownTimer((timers.sumOf { it.second  }), 100) {
+            chronoTimer = object : CountDownTimer((timers.sumOf { it.second }), 100) {
                 override fun onTick(millisUntilFinished: Long) {
                     elapsedTime += 100 // Aumenta el tiempo transcurrido en 1000 ms
                 }
@@ -111,7 +111,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
         if (countDownTimer == null && upperList.isNotEmpty()) {
             wasInitialized = true
-            currentTimer = upperList.map{it.second}.first()
+            currentTimer = upperList.map { it.second }.first()
             timeRemaining = currentTimer!!
             upperList.removeAt(0)
 
@@ -211,16 +211,17 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     TimersCarousel(
                         timers = upperList.map { it.second },
                         MaterialTheme.colorScheme.primary,
-                        enabled = true,
+                        enabled = !wasInitialized,
                         navController,
                         onClick = { selectedTime ->
-                            val keyToDelete = upperList.find { it.second == selectedTime }?.first // ✅ Obtener la clave correspondiente
-                            keyToDelete?.let { key ->
-                                Log.d("alejoIsTalking", "Se ha pulsado en $key")
-//                                scope.launch { timersDataStore.removeTimer(key) }
-                                navController.navigate(AppScreens.TimerDetailsScreen.createRoute(key))
+                            if (!wasInitialized) {
+                                val keyToDelete = upperList.find { it.second == selectedTime }?.first
+                                keyToDelete?.let { key ->
+                                    Log.d("alejoIsTalking", "Se ha pulsado en $key")
+                                    navController.navigate(AppScreens.TimerDetailsScreen.createRoute(key))
+                                }
                             }
-                             }
+                        }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -330,5 +331,5 @@ fun formatTime(timeMillis: Long): String {
 @Composable
 fun MinitimerScreenPreview() {
     val navController = rememberNavController()
-    MiniTimersScreen(navController,TimersDataStore(navController.context))
+    MiniTimersScreen(navController, TimersDataStore(navController.context))
 }
