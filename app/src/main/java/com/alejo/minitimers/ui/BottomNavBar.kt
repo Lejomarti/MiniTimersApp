@@ -22,27 +22,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alejo.minitimers.navigation.AppScreens
 
 
 @Composable
-fun BottomNavBar() {
-        var selectedItem by remember { mutableStateOf(0) }
+fun BottomNavBar(navController: NavController) {
+    var selectedItem by remember { mutableStateOf(0) }
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-        val items = listOf("MiniTimer", "Timer", "Settings")
+    val items = listOf(
+        Triple("MiniTimer", Icons.Filled.Home, AppScreens.MiniTimersScreen.route),
+        Triple("Timer", Icons.Filled.PlayArrow, AppScreens.TimerOnlyScreen.route),
+        Triple("Settings", Icons.Filled.Settings, AppScreens.SettingsScreen.route)
+    )
         val icons = listOf(Icons.Filled.Home, Icons.Filled.PlayArrow, Icons.Filled.Settings)
 
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {
-            items.forEachIndexed { index, item ->
+            items.forEach { (label, icon, route) ->
                 NavigationBarItem(
-                    icon = {
-                        Icon(imageVector = icons[index], contentDescription = item)
-                    },
-                    label = { Text(item) },
-                    selected = selectedItem == index,
+                    icon = {Icon(imageVector = icon, contentDescription = label)},
+                    label = { Text(label) },
+                    selected = currentRoute == route,
                     onClick = {
-                        selectedItem = index
+                        if (currentRoute != route) {
+                            navController.navigate(route) {
+                                popUpTo(AppScreens.MiniTimersScreen.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
                     },
                         colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
@@ -56,10 +67,9 @@ fun BottomNavBar() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BottomNavBarPreview() {
-    MiniTimersTheme {
-        BottomNavBar()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun BottomNavBarPreview() {
+//    MiniTimersTheme {
+//    }
+//}

@@ -23,10 +23,10 @@ import com.alejo.minitimers.ui.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimerOnlyScreen() {
+fun TimerOnlyScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar(title = "Timer")},
-        bottomBar = { BottomNavBar() }
+        bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -35,7 +35,7 @@ fun TimerOnlyScreen() {
                 .padding(bottom = 16.dp)
 
         ) {
-            Text(text = "Settings Screen", fontSize = 24.sp)
+            Text(text = "Timer", fontSize = 24.sp)
         }
     }
 }
@@ -43,5 +43,5 @@ fun TimerOnlyScreen() {
 @Preview
 @Composable
 fun TimerOnlyScreenPreview() {
-    TimerOnlyScreen()
+//    TimerOnlyScreen()
 }

@@ -23,10 +23,10 @@ import com.alejo.minitimers.ui.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar(title = "Settings") },
-        bottomBar = { BottomNavBar() }
+        bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -43,6 +43,6 @@ fun SettingsScreen() {
 @Preview
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen()
+//    SettingsScreen()
 }
 

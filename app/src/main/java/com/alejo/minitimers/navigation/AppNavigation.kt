@@ -27,10 +27,10 @@ fun AppNavigation(timersDataStore: TimersDataStore){
         }
 
         composable(route = AppScreens.TimerOnlyScreen.route) {
-            TimerOnlyScreen()
+            TimerOnlyScreen(navController)
         }
         composable(route = AppScreens.SettingsScreen.route) {
-            SettingsScreen()
+            SettingsScreen(navController)
         }
     }
 }
