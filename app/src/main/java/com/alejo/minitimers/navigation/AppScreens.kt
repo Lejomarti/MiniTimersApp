@@ -7,6 +7,6 @@ sealed class AppScreens(val route: String) {
         fun createRoute(timerId: String) = "timer_details_screen/$timerId"
     }
 
-    object TimerOnlyScreen : AppScreens("timer_only_screen")
+    object ChronometerScreen : AppScreens("chronometer_screen")
     object SettingsScreen : AppScreens("settings_screen")
 }

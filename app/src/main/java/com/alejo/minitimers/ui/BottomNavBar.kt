@@ -1,5 +1,6 @@
 package com.alejo.minitimers.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
@@ -27,18 +28,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alejo.minitimers.navigation.AppScreens
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun BottomNavBar(navController: NavController) {
-    var selectedItem by remember { mutableStateOf(0) }
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val items = listOf(
         Triple("MiniTimer", Icons.Filled.Home, AppScreens.MiniTimersScreen.route),
-        Triple("Timer", Icons.Filled.PlayArrow, AppScreens.TimerOnlyScreen.route),
+        Triple("Chronometer", Icons.Filled.PlayArrow, AppScreens.ChronometerScreen.route),
         Triple("Settings", Icons.Filled.Settings, AppScreens.SettingsScreen.route)
     )
-        val icons = listOf(Icons.Filled.Home, Icons.Filled.PlayArrow, Icons.Filled.Settings)
-
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {
