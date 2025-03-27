@@ -186,7 +186,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
     // Pantalla del temporizador
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar("Mini Timer") },
         bottomBar = { BottomNavBar() }
     ) { paddingValues ->
         Box(

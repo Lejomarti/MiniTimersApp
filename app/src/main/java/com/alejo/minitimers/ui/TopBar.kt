@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(){
+fun TopBar(title: String){
     CenterAlignedTopAppBar(
-        title = { Text("Mini Temporizador") }
+        title = { Text(title) }
     )
 }

@@ -7,7 +7,9 @@ import androidx.navigation.compose.rememberNavController
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.screens.AddTimerScreen
 import com.alejo.minitimers.screens.MiniTimersScreen
+import com.alejo.minitimers.screens.SettingsScreen
 import com.alejo.minitimers.screens.TimerDetailsScreen
+import com.alejo.minitimers.screens.TimerOnlyScreen
 
 @Composable
 fun AppNavigation(timersDataStore: TimersDataStore){
@@ -22,6 +24,13 @@ fun AppNavigation(timersDataStore: TimersDataStore){
         composable(route = AppScreens.TimerDetailsScreen.route){backStackEntry ->
             val timerId = backStackEntry.arguments?.getString("timerId")
             TimerDetailsScreen(navController, timerId, timersDataStore)
+        }
+
+        composable(route = AppScreens.TimerOnlyScreen.route) {
+            TimerOnlyScreen()
+        }
+        composable(route = AppScreens.SettingsScreen.route) {
+            SettingsScreen()
         }
     }
 }

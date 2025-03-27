@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BottomNavBar() {
-    NavigationBar() {
         var selectedItem by remember { mutableStateOf(0) }
 
         val items = listOf("MiniTimer", "Timer", "Settings")
@@ -45,7 +44,7 @@ fun BottomNavBar() {
                     onClick = {
                         selectedItem = index
                     },
-                    colors = NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = Color.Gray,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -54,7 +53,6 @@ fun BottomNavBar() {
                     )
                 )
             }
-        }
     }
 }
 
