@@ -1,5 +1,6 @@
 package com.alejo.minitimers.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
@@ -22,46 +23,52 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alejo.minitimers.navigation.AppScreens
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun BottomNavBar() {
-    NavigationBar() {
-        var selectedItem by remember { mutableStateOf(0) }
+fun BottomNavBar(navController: NavController) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-        val items = listOf("MiniTimer", "Timer", "Settings")
-        val icons = listOf(Icons.Filled.Home, Icons.Filled.PlayArrow, Icons.Filled.Settings)
-
+    val items = listOf(
+        Triple("MiniTimer", Icons.Filled.Home, AppScreens.MiniTimersScreen.route),
+        Triple("Chronometer", Icons.Filled.PlayArrow, AppScreens.ChronometerScreen.route),
+        Triple("Settings", Icons.Filled.Settings, AppScreens.SettingsScreen.route)
+    )
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {
-            items.forEachIndexed { index, item ->
+            items.forEach { (label, icon, route) ->
                 NavigationBarItem(
-                    icon = {
-                        Icon(imageVector = icons[index], contentDescription = item)
-                    },
-                    label = { Text(item) },
-                    selected = selectedItem == index,
+                    icon = {Icon(imageVector = icon, contentDescription = label)},
+                    label = { Text(label) },
+                    selected = currentRoute == route,
                     onClick = {
-                        selectedItem = index
+                        if (currentRoute != route) {
+                            navController.navigate(route) {
+                                popUpTo(AppScreens.MiniTimersScreen.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
                     },
-                    colors = NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = Color.Gray,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
                         unselectedTextColor = Color.Gray,
-                        indicatorColor = Color.Transparent // o el color que desees para el indicador
+                        indicatorColor = Color.Transparent
                     )
                 )
             }
-        }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BottomNavBarPreview() {
-    MiniTimersTheme {
-        BottomNavBar()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun BottomNavBarPreview() {
+//    MiniTimersTheme {
+//    }
+//}

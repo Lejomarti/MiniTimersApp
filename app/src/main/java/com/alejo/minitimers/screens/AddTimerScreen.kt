@@ -31,7 +31,7 @@ fun AddTimerScreen(navController: NavController,timersDataStore:TimersDataStore)
                     }
                 }
             )
-        }, bottomBar = { BottomNavBar() }
+        }, bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier

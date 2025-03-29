@@ -64,7 +64,7 @@ fun TimerDetailsScreen(
                     }
                 }
             )
-        }, bottomBar = { BottomNavBar() }
+        }, bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
