@@ -1,6 +1,7 @@
 package com.alejo.minitimers.screens
 
 import android.os.CountDownTimer
+import android.os.SystemClock
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -21,6 +22,7 @@ import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TimersCarousel
 import com.alejo.minitimers.ui.TopBar
 import com.alejo.minitimers.utils.SoundManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -29,162 +31,170 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     val timers by timersDataStore.timersFlow.collectAsState(initial = emptyList())
 
     var wasInitialized by rememberSaveable { mutableStateOf(false) }
-    var timeRemaining by rememberSaveable { mutableStateOf(0L) }
     var isRunning by rememberSaveable { mutableStateOf(false) }
     var isPaused by rememberSaveable { mutableStateOf(false) }
-    var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
 
-    val upperList = remember { mutableStateListOf<Pair<String, Long>>() }
-    val lowerList = remember { mutableStateListOf<Long>() }
+    var startTime by remember { mutableStateOf(0L) } // Marca de inicio del cronómetro
+    var pausedTime by remember { mutableStateOf(0L) } // Tiempo acumulado en pausa
+    var elapsedTime by remember { mutableStateOf(0L) }
+
+    var upperList = remember { mutableStateListOf<Pair<String, Long>>() }
+    var lowerList = remember { mutableStateListOf<Long>() }
     var currentTimer by remember { mutableStateOf<Long?>(null) }
 
-    var elapsedTime by remember { mutableStateOf(0L) } // Tiempo del cronómetro
-    var isChronoRunning by remember { mutableStateOf(false) }
-    var chronoTimer: CountDownTimer? by remember { mutableStateOf(null) }
+    var timeRemaining by rememberSaveable { mutableStateOf(0L) }
+    var countDownTimer: CountDownTimer? by remember { mutableStateOf(null) }
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val soundManager = remember { SoundManager(context) }
+    val intervals :Long = 10
 
-    // Almacenar el flujo en upperList
-    LaunchedEffect(timers) {
-        upperList.clear()
-        upperList.addAll(timers)
-    }
-
+    // Función para iniciar el cronómetro
     fun startChrono() {
-        if (!isChronoRunning) {
-            isChronoRunning = true
-            chronoTimer = object : CountDownTimer((timers.sumOf { it.second }), 100) {
-                override fun onTick(millisUntilFinished: Long) {
-                    elapsedTime += 100 // Aumenta el tiempo transcurrido en 1000 ms
-                }
+        if (isPaused) {
+            startTime = SystemClock.elapsedRealtime() - pausedTime
+        } else {
+            startTime = SystemClock.elapsedRealtime()
+        }
+        isPaused = false
 
-                override fun onFinish() {
-                    chronoTimer?.cancel() // Detener el temporizador
-                    isChronoRunning = false
-                }
-            }.start()
+        scope.launch {
+            while (isRunning) {
+                elapsedTime = SystemClock.elapsedRealtime() - startTime
+                delay(100) // Actualización frecuente
+            }
         }
     }
 
-    // Función para pausar el cronómetro
+    // Pausar el cronómetro
     fun pauseChrono() {
-        chronoTimer?.cancel()
-        isChronoRunning = false
+        isPaused = true
+        pausedTime = SystemClock.elapsedRealtime() - startTime
+
     }
 
-    // Función para reanudar el cronómetro
+    // Reanudar el cronómetro
     fun resumeChrono() {
-        if (!isChronoRunning) {
+        if (isPaused) {
             startChrono()
         }
     }
 
-    // Función para cancelar el cronómetro
+    // Cancelar el cronómetro
     fun cancelChrono() {
-        chronoTimer?.cancel()
-        chronoTimer = null
         elapsedTime = 0L
-        isChronoRunning = false
+        startTime = 0L
+        pausedTime = 0L
     }
 
+    // Resetear las listas
     fun resetLists() {
         upperList.clear()
         upperList.addAll(timers)
         lowerList.clear()
     }
 
+
+    // Iniciar el temporizador
+    fun startTimer() {
+        if (upperList.isNotEmpty()) {
+            if (!wasInitialized) {
+                wasInitialized = true
+                isRunning = true
+                startChrono() // Solo inicia el cronómetro una vez al principio
+            }
+            currentTimer = upperList.removeAt(0).second
+            timeRemaining = currentTimer ?: 0L
+
+
+            countDownTimer?.cancel() // Cancela cualquier temporizador previo
+            countDownTimer = object : CountDownTimer(timeRemaining, intervals) {
+                override fun onTick(millisUntilFinished: Long) {
+                    timeRemaining = millisUntilFinished
+                }
+
+                override fun onFinish() {
+                    currentTimer?.let {
+                        lowerList.add(it)
+                        currentTimer = null
+                        soundManager.playSound()
+                    }
+
+                    if (upperList.isNotEmpty()) {
+                        startTimer() // Continúa con el siguiente temporizador sin tocar el cronómetro
+                    } else {
+                        isRunning = false
+                        pauseChrono() // Solo se pausa cuando todos los timers terminan
+                    }
+                }
+            }.start()
+        } else {
+            isRunning = false
+            wasInitialized = false
+            pauseChrono() // Se detiene el cronómetro solo si ya no hay timers
+        }
+    }
+
     fun onTimerFinish() {
         currentTimer?.let {
             lowerList.add(it)
             currentTimer = null
-
             soundManager.playSound()
         }
-    }
 
-
-    fun startTimer() {
-        val interval = if (timeRemaining <= 300_000L) 40L else 1000L
-        Log.d("alejoIsTalking", "El valor de upperList es $upperList")
-        Log.d("alejoIsTalking", "El valor de timers es $upperList")
-
-        if (countDownTimer == null && upperList.isNotEmpty()) {
-            wasInitialized = true
-            currentTimer = upperList.map { it.second }.first()
-            timeRemaining = currentTimer!!
-            upperList.removeAt(0)
-
-            countDownTimer = object : CountDownTimer(timeRemaining, interval) {
-                override fun onTick(millisUntilFinished: Long) {
-                    timeRemaining = millisUntilFinished
-                }
-
-                override fun onFinish() {
-                    if (upperList.isNotEmpty()) {
-                        countDownTimer = null
-                        onTimerFinish()
-                        startTimer()
-
-                    }
-                    if (upperList.isEmpty() && (timeRemaining < 100)) {
-                        Log.d("alejoIsTalking", "Esto se llama solo si ya se acaba la lista")
-                        timeRemaining = 0L
-                        isRunning = false
-                        onTimerFinish()
-                    }
-                }
-            }.start()
-            isRunning = true
-            isPaused = false
+        if (upperList.isNotEmpty()) {
+            startTimer() // Continúa con el siguiente temporizador sin tocar el cronómetro
+        } else {
+            isRunning = false
+            pauseChrono()
         }
     }
 
+    // Pausar el temporizador
     fun pauseTimer() {
         countDownTimer?.cancel()
         isRunning = false
         isPaused = true
+        pauseChrono()
     }
 
+    // Reanudar el temporizador
     fun resumeTimer() {
-        if (timeRemaining > 0) {
-            val interval = if (timeRemaining <= 300_000L) 40L else 1000L
+        isRunning = true
+        isPaused = false
+        resumeChrono()
 
-            countDownTimer = object : CountDownTimer(timeRemaining, interval) {
-                override fun onTick(millisUntilFinished: Long) {
-                    timeRemaining = millisUntilFinished
-                }
+        countDownTimer = object : CountDownTimer(timeRemaining, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                timeRemaining = millisUntilFinished
+            }
 
-                override fun onFinish() {
-                    if (upperList.isNotEmpty()) {
-                        countDownTimer = null
-                        onTimerFinish()
-                        startTimer()
-                    } else if (upperList.isEmpty() && (timeRemaining < 100)) {
-                        timeRemaining = 0L
-                        isRunning = false
-                        onTimerFinish()
-                        Log.d("alejoIsTalking", "Esto se llama solo si ya se acaba la lista")
-                    }
-                }
-            }.start()
-            isRunning = true
-            isPaused = false
-        }
+            override fun onFinish() {
+                onTimerFinish()
+            }
+        }.start()
     }
 
-    // Función para cancelar el temporizador
+    // Cancelar el temporizador
     fun cancelTimer() {
         countDownTimer?.cancel()
-        countDownTimer = null
-        timeRemaining = 0L
         isRunning = false
-        isPaused = false
         wasInitialized = false
+        timeRemaining = 0L
+        currentTimer = null
+        resetLists()
+        cancelChrono()
+    }
+
+
+
+
+    LaunchedEffect(timers) {
         resetLists()
     }
 
-    // Pantalla del temporizador
+    // UI
     Scaffold(
         topBar = { TopBar("Mini Timer") },
         bottomBar = { BottomNavBar(navController = navController) }
@@ -194,20 +204,17 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(bottom = 16.dp)
-
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //primer carousel
+                    // Primer carrusel
                     TimersCarousel(
                         timers = upperList.map { it.second },
                         MaterialTheme.colorScheme.primary,
@@ -215,29 +222,31 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         navController,
                         onClick = { selectedTime ->
                             if (!wasInitialized) {
-                                val keyToDelete = upperList.find { it.second == selectedTime }?.first
+                                val keyToDelete =
+                                    upperList.find { it.second == selectedTime }?.first
                                 keyToDelete?.let { key ->
-                                    Log.d("alejoIsTalking", "Se ha pulsado en $key")
-                                    navController.navigate(AppScreens.TimerDetailsScreen.createRoute(key))
+                                    navController.navigate(
+                                        AppScreens.TimerDetailsScreen.createRoute(
+                                            key
+                                        )
+                                    )
                                 }
                             }
                         }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // Anillo de temporizador
                     TimerRing(
-                        progress = timeRemaining / (currentTimer
-                            ?: 1).toFloat(),
-                        timeText =
-                        when {
-                            !wasInitialized -> formatTime(upperList.sumOf { it.second })
-                            else -> formatTime(timeRemaining)
-                        },
-                        additionalText = formatTime(elapsedTime) // Segundo texto
+                        progress = timeRemaining / (currentTimer ?: 1).toFloat(),
+                        timeText = if (!wasInitialized) formatTime(upperList.sumOf { it.second }) else formatTime(
+                            timeRemaining
+                        ),
+                        additionalText = formatTime(elapsedTime + 50) // Segundo texto: cronómetro
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    //segundo carousel
+                    // Segundo carrusel
                     TimersCarousel(
                         timers = lowerList,
                         color = Color.LightGray,
@@ -247,7 +256,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     )
                 }
 
-
                 Button(
                     modifier = Modifier.width(300.dp),
                     onClick = {
@@ -255,21 +263,17 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             timersDataStore.removeAllTimers()
                         }
                         cancelChrono()
-                    },
+                    }
                 ) {
                     Text(text = "Eliminar todo")
                 }
 
-                //botones inferiores
+                // Botones de control
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-
-
                     if (!wasInitialized) {
-
                         Button(
                             modifier = Modifier.width(300.dp),
                             onClick = {
@@ -285,16 +289,13 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     }
 
                     if (wasInitialized) {
-
                         Button(
                             modifier = Modifier.width(180.dp),
                             onClick = {
                                 if (isPaused) {
-                                    resumeTimer() // Llama a reanudar si está pausado
-                                    startChrono()
+                                    resumeTimer()
                                 } else {
-                                    pauseTimer() // Pausa si está en ejecución
-                                    pauseChrono()
+                                    pauseTimer()
                                 }
                             },
                             enabled = isRunning || isPaused
@@ -304,13 +305,12 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     }
 
                     if (wasInitialized) {
-
                         Button(
                             modifier = Modifier.width(180.dp),
                             onClick = {
                                 cancelTimer()
-                                cancelChrono()
-                            }) {
+                            }
+                        ) {
                             Text(text = "Cancelar")
                         }
                     }
