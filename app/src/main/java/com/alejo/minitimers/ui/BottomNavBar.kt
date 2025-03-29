@@ -59,7 +59,7 @@ fun BottomNavBar(navController: NavController) {
                         unselectedIconColor = Color.Gray,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
                         unselectedTextColor = Color.Gray,
-                        indicatorColor = Color.Transparent // o el color que desees para el indicador
+                        indicatorColor = Color.Transparent
                     )
                 )
             }

@@ -1,5 +1,6 @@
 package com.alejo.minitimers.screens
 
+import android.os.SystemClock
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.TimerRing
 import com.alejo.minitimers.ui.TopBar
 import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,24 +42,33 @@ fun ChronometerScreen(navController: NavController) {
     var chronometerWasInitialized by rememberSaveable { mutableStateOf(false) }
     var chronometerIsRunning by rememberSaveable { mutableStateOf(false) }
     var chronometerIsPaused by rememberSaveable { mutableStateOf(false) }
-    var elapsedTime by rememberSaveable { mutableStateOf(0L) } // Tiempo en segundos
-    var progress by remember { mutableFloatStateOf(0f) } // Progreso de la animación
+    var startTime by rememberSaveable { mutableStateOf(0L) }
+    var elapsedTime by rememberSaveable { mutableStateOf(0L) }
+    var progress by remember { mutableFloatStateOf(0f) }
+
     val coroutineScope = rememberCoroutineScope()
 
     fun startChronometer() {
         chronometerWasInitialized = true
         chronometerIsRunning = true
         chronometerIsPaused = false
+        startTime = SystemClock.elapsedRealtime() - elapsedTime
     }
 
     fun pauseChronometer() {
-        chronometerIsRunning = false
-        chronometerIsPaused = true
+        if (chronometerIsRunning) {
+            elapsedTime = SystemClock.elapsedRealtime() - startTime
+            chronometerIsRunning = false
+            chronometerIsPaused = true
+        }
     }
 
     fun resumeChronometer() {
-        chronometerIsRunning = true
-        chronometerIsPaused = false
+        if (chronometerIsPaused) {
+            startTime = SystemClock.elapsedRealtime() - elapsedTime
+            chronometerIsRunning = true
+            chronometerIsPaused = false
+        }
     }
 
     fun cancelChronometer() {
@@ -71,9 +82,9 @@ fun ChronometerScreen(navController: NavController) {
     LaunchedEffect(chronometerIsRunning) {
         if (chronometerIsRunning) {
             while (chronometerIsRunning) {
-                delay(10L) // 10 milisegundos (centésimas de segundo)
-                elapsedTime++
-                progress = (elapsedTime / 6000f) // Suponiendo que 1 minuto es el 100%
+                elapsedTime = (SystemClock.elapsedRealtime() - startTime)
+                progress = (elapsedTime % 60000L/ 6000f)
+                delay(10L)
             }
         }
     }
@@ -100,9 +111,9 @@ fun ChronometerScreen(navController: NavController) {
 
                 val formattedTime = String.format(
                     "%02d:%02d:%02d",
-                    (elapsedTime / 6000),
-                    (elapsedTime % 6000) / 100,
-                    elapsedTime % 100
+                    (elapsedTime / 1000) / 60,
+                    (elapsedTime / 1000) % 60,
+                    (elapsedTime % 1000) / 10
                 )
 
                 TimerRing(
@@ -143,7 +154,6 @@ fun ChronometerScreen(navController: NavController) {
         }
     }
 }
-
 
 
 
