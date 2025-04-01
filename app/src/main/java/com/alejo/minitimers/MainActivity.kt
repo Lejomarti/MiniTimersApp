@@ -4,19 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppNavigation
-import com.alejo.minitimers.ui.BottomNavBar
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,9 +18,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val timersDataStore = TimersDataStore(this)
+        val settingsDataStore = SettingsDataStore(this)
         setContent {
-            MiniTimersTheme {
-                MiniTimersApp(timersDataStore)
+            val isDarkMode by settingsDataStore.isDarkMode.collectAsState(initial = false)
+            MiniTimersTheme(darkTheme = isDarkMode) {
+                MiniTimersApp(timersDataStore,settingsDataStore)
             }
         }
     }
@@ -34,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MiniTimersApp(timersDataStore: TimersDataStore) {
+fun MiniTimersApp(timersDataStore: TimersDataStore, settingsDataStore: SettingsDataStore) {
 //    Scaffold(
 //        bottomBar = { BottomNavBar() },
 //    ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
@@ -43,7 +39,7 @@ fun MiniTimersApp(timersDataStore: TimersDataStore) {
 //                .fillMaxSize()
 //                .padding(paddingValues)
 //        ) {
-            AppNavigation(timersDataStore )
+            AppNavigation(timersDataStore = timersDataStore,settingsDataStore = settingsDataStore)
 //        }
 //    }
 }
