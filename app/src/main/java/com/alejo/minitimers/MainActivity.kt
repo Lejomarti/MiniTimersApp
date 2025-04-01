@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
         val settingsDataStore = SettingsDataStore(this)
         setContent {
             val isDarkMode by settingsDataStore.isDarkMode.collectAsState(initial = false)
-            MiniTimersTheme(darkTheme = isDarkMode) {
+            val themeColorName by settingsDataStore.themeColor.collectAsState(initial = "Blue")
+            MiniTimersTheme(darkTheme = isDarkMode, themeColorName = themeColorName) {
                 MiniTimersApp(timersDataStore,settingsDataStore)
             }
         }
@@ -31,23 +32,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MiniTimersApp(timersDataStore: TimersDataStore, settingsDataStore: SettingsDataStore) {
-//    Scaffold(
-//        bottomBar = { BottomNavBar() },
-//    ) { paddingValues -> // paddingValues es necesario para evitar errores de contenido
-//        Surface(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues)
-//        ) {
             AppNavigation(timersDataStore = timersDataStore,settingsDataStore = settingsDataStore)
-//        }
-//    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MinitimersAppPreview() {
-    MiniTimersTheme {
-//        MiniTimersApp(timersDataStore)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MinitimersAppPreview() {
+//    MiniTimersTheme {
+////        MiniTimersApp(timersDataStore)
+//    }
+//}

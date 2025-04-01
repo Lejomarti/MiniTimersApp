@@ -110,10 +110,10 @@ fun AddTimerContent(navController: NavController, timersDataStore: TimersDataSto
 }
 
 
-@Preview
-@Composable
-fun PreviewAddTimerScreen() {
-    MiniTimersTheme {
-//        AddTimerScreen(navController = null)
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewAddTimerScreen() {
+//    MiniTimersTheme {
+////        AddTimerScreen(navController = null)
+//    }
+//}
