@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TimerRing(progress: Float, timeText: String, additionalText: String) {
     val ringColor = MaterialTheme.colorScheme.primary
+    val textColor = MaterialTheme.colorScheme.onBackground
+    val secondaryTextColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     // Canvas para dibujar el anillo progresivo
     Box(
@@ -51,12 +53,12 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
             Text(
                 text = timeText,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.Black
+                color = textColor
             )
             Text(
                 text = additionalText,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = secondaryTextColor
             )
         }
     }
