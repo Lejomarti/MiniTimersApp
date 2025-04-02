@@ -1,4 +1,4 @@
-package com.alejo.minitimers.ui
+package com.alejo.minitimers.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.alejo.minitimers.screens.formatTime
+import com.alejo.minitimers.ui.screens.formatTime
 
 @Composable
 fun TimerCard(timeText: Long, color: Color , onClick:(() -> Unit)? = null) {

@@ -1,4 +1,4 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,12 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.SettingsDataStore
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TopBar
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TopBar
 import com.alejo.minitimers.ui.theme.themeColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

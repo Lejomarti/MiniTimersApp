@@ -1,4 +1,4 @@
-package com.alejo.minitimers.ui
+package com.alejo.minitimers.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

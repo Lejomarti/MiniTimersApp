@@ -1,8 +1,7 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
 import android.os.CountDownTimer
 import android.os.SystemClock
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,10 +16,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppScreens
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TimerRing
-import com.alejo.minitimers.ui.TimersCarousel
-import com.alejo.minitimers.ui.TopBar
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TimerRing
+import com.alejo.minitimers.ui.components.TimersCarousel
+import com.alejo.minitimers.ui.components.TopBar
 import com.alejo.minitimers.utils.SoundManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

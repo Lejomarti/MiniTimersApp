@@ -6,11 +6,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.TimersDataStore
-import com.alejo.minitimers.screens.AddTimerScreen
-import com.alejo.minitimers.screens.MiniTimersScreen
-import com.alejo.minitimers.screens.SettingsScreen
-import com.alejo.minitimers.screens.TimerDetailsScreen
-import com.alejo.minitimers.screens.ChronometerScreen
+import com.alejo.minitimers.ui.screens.AddTimerScreen
+import com.alejo.minitimers.ui.screens.MiniTimersScreen
+import com.alejo.minitimers.ui.screens.SettingsScreen
+import com.alejo.minitimers.ui.screens.TimerDetailsScreen
+import com.alejo.minitimers.ui.screens.ChronometerScreen
 
 @Composable
 fun AppNavigation(timersDataStore: TimersDataStore, settingsDataStore: SettingsDataStore){

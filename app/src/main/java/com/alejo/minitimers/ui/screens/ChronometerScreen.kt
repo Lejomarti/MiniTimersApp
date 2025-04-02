@@ -1,4 +1,4 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
 import android.os.SystemClock
 import androidx.compose.foundation.layout.Arrangement
@@ -29,11 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TimerRing
-import com.alejo.minitimers.ui.TopBar
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TimerRing
+import com.alejo.minitimers.ui.components.TopBar
 import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterial3Api::class)
