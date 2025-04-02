@@ -83,7 +83,7 @@ fun ChronometerScreen(navController: NavController) {
         if (chronometerIsRunning) {
             while (chronometerIsRunning) {
                 elapsedTime = (SystemClock.elapsedRealtime() - startTime)
-                progress = (elapsedTime % 60000L/ 6000f)
+                progress = (elapsedTime % 60000L/ 60000f)
                 delay(10L)
             }
         }

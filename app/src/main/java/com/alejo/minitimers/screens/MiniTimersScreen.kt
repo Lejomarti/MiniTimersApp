@@ -165,7 +165,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
         isPaused = false
         resumeChrono()
 
-        countDownTimer = object : CountDownTimer(timeRemaining, 1000) {
+        countDownTimer = object : CountDownTimer(timeRemaining, 10) {
             override fun onTick(millisUntilFinished: Long) {
                 timeRemaining = millisUntilFinished
             }
@@ -178,16 +178,15 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
     // Cancelar el temporizador
     fun cancelTimer() {
-        countDownTimer?.cancel()
-        isRunning = false
+        pauseTimer()
         wasInitialized = false
+        isRunning = false
+        isPaused = false
         timeRemaining = 0L
-        currentTimer = null
+        currentTimer = 0L
         resetLists()
         cancelChrono()
-    }
-
-
+        }
 
 
     LaunchedEffect(timers) {
