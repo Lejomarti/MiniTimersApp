@@ -79,5 +79,5 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
 
-    implementation("androidx.core:core-ktx:1.15.0") //para mezclar colores D=
+    implementation("androidx.core:core-ktx:1.12.0")
 }
