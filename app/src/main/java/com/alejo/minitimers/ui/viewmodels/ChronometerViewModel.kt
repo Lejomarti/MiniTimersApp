@@ -1,5 +1,6 @@
 package com.alejo.minitimers.ui.viewmodels
 
+import android.annotation.SuppressLint
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -106,6 +107,7 @@ class ChronometerViewModel(
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun startChronometer() {
         viewModelScope.launch {
             val now = SystemClock.elapsedRealtime() - _elapsedTime.value
