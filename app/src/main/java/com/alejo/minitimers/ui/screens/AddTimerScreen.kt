@@ -1,4 +1,4 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -7,15 +7,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.data.personalizedtimersList
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TimeSelector
-import com.alejo.minitimers.ui.TimerList
-import com.alejo.minitimers.ui.theme.MiniTimersTheme
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TimeSelector
+import com.alejo.minitimers.ui.components.TimerList
 import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,26 +1,13 @@
 package com.alejo.minitimers.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import com.alejo.minitimers.data.SettingsDataStore
+import androidx.core.graphics.ColorUtils
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -107,19 +94,39 @@ fun MiniTimersTheme(
 //         else -> LightColors
 //     }
 
+    fun blendColors(color1: Color, color2: Color, ratio: Float): Color {
+        val blendedColor = ColorUtils.blendARGB(color1.toArgb(), color2.toArgb(), ratio)
+        return Color(blendedColor)
+    }
+
     val colorScheme = if (darkTheme) {
         darkColorScheme(
             primary = selectedColors[0],
             onPrimary = selectedColors[1],
             secondary = selectedColors[2],
-            onSecondary = selectedColors[3]
+            onSecondary = selectedColors[3],
+            tertiary = selectedColors[4],
+            onTertiary = selectedColors[5],
+            surface = selectedColors[6],
+            onSurface = blendColors(Color(0xFF131313), selectedColors[7], 0.15f),
+            background = blendColors(Color(0xFF131313), selectedColors[6], 0.15f),
+            surfaceVariant = selectedColors[9],
+//            onSurfaceVariant = selectedColors[10]
+
         )
     } else {
         lightColorScheme(
             primary = selectedColors[0],
             onPrimary = selectedColors[1],
             secondary = selectedColors[2],
-            onSecondary = selectedColors[3]
+            onSecondary = selectedColors[3],
+            tertiary = selectedColors[4],
+            onTertiary = selectedColors[5],
+            surface = selectedColors[6], // Fondo de superficies
+            onSurface = blendColors(Color(0xFF131313), selectedColors[7], 0.15f),
+            background = selectedColors[8], // Fondo general
+            surfaceVariant = selectedColors[9],
+//            onSurfaceVariant = selectedColors[10]
         )
     }
 

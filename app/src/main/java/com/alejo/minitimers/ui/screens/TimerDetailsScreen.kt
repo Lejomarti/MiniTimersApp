@@ -1,4 +1,4 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.TimersDataStore
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TimeSelector
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TimeSelector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

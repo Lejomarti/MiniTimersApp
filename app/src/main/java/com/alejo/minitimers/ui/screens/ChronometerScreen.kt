@@ -1,6 +1,5 @@
-package com.alejo.minitimers.screens
+package com.alejo.minitimers.ui.screens
 
-import android.os.SystemClock
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,83 +10,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.alejo.minitimers.ui.BottomNavBar
-import com.alejo.minitimers.ui.TimerRing
-import com.alejo.minitimers.ui.TopBar
-import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
+import com.alejo.minitimers.data.ChronometerDataStore
+import com.alejo.minitimers.ui.components.BottomNavBar
+import com.alejo.minitimers.ui.components.TimerRing
+import com.alejo.minitimers.ui.components.TopBar
+import com.alejo.minitimers.ui.viewmodels.ChronometerViewModel
+import com.alejo.minitimers.ui.viewmodels.ChronometerViewModelFactory
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChronometerScreen(navController: NavController) {
-    var chronometerWasInitialized by rememberSaveable { mutableStateOf(false) }
-    var chronometerIsRunning by rememberSaveable { mutableStateOf(false) }
-    var chronometerIsPaused by rememberSaveable { mutableStateOf(false) }
-    var startTime by rememberSaveable { mutableStateOf(0L) }
-    var elapsedTime by rememberSaveable { mutableStateOf(0L) }
-    var progress by remember { mutableFloatStateOf(0f) }
+    val context = LocalContext.current
+    val viewModel: ChronometerViewModel = viewModel(
+        factory = ChronometerViewModelFactory(ChronometerDataStore(context))
+    )
 
-    val coroutineScope = rememberCoroutineScope()
-
-    fun startChronometer() {
-        chronometerWasInitialized = true
-        chronometerIsRunning = true
-        chronometerIsPaused = false
-        startTime = SystemClock.elapsedRealtime() - elapsedTime
-    }
-
-    fun pauseChronometer() {
-        if (chronometerIsRunning) {
-            elapsedTime = SystemClock.elapsedRealtime() - startTime
-            chronometerIsRunning = false
-            chronometerIsPaused = true
-        }
-    }
-
-    fun resumeChronometer() {
-        if (chronometerIsPaused) {
-            startTime = SystemClock.elapsedRealtime() - elapsedTime
-            chronometerIsRunning = true
-            chronometerIsPaused = false
-        }
-    }
-
-    fun cancelChronometer() {
-        chronometerWasInitialized = false
-        chronometerIsRunning = false
-        chronometerIsPaused = false
-        elapsedTime = 0L
-        progress = 0f
-    }
-
-    LaunchedEffect(chronometerIsRunning) {
-        if (chronometerIsRunning) {
-            while (chronometerIsRunning) {
-                elapsedTime = (SystemClock.elapsedRealtime() - startTime)
-                progress = (elapsedTime % 60000L/ 6000f)
-                delay(10L)
-            }
-        }
-    }
+    val chronometerWasInitialized by viewModel.chronometerWasInitialized.collectAsState()
+    val chronometerIsRunning by viewModel.chronometerIsRunning.collectAsState()
+    val chronometerIsPaused by viewModel.chronometerIsPaused.collectAsState()
+    val elapsedTime by viewModel.elapsedTime.collectAsState()
+    val progress by viewModel.progress.collectAsState()
 
     Scaffold(
         topBar = { TopBar(title = "Chronometer") },
@@ -98,14 +52,11 @@ fun ChronometerScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(bottom = 16.dp)
-
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -123,11 +74,10 @@ fun ChronometerScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row() {
-
                     if (!chronometerWasInitialized) {
                         Button(
                             modifier = Modifier.width(300.dp),
-                            onClick = { startChronometer() },
+                            onClick = { viewModel.startChronometer() },
                         ) {
                             Text(text = "Empezar")
                         }
@@ -136,15 +86,15 @@ fun ChronometerScreen(navController: NavController) {
                             modifier = Modifier.width(180.dp),
                             enabled = chronometerIsRunning || chronometerIsPaused,
                             onClick = {
-                                if (chronometerIsPaused) resumeChronometer()
-                                else pauseChronometer()
+                                if (chronometerIsPaused) viewModel.resumeChronometer()
+                                else viewModel.pauseChronometer()
                             }
                         ) {
                             Text(text = if (chronometerIsPaused) "Reanudar" else "Pausar")
                         }
                         Button(
                             modifier = Modifier.width(180.dp),
-                            onClick = { cancelChronometer() }
+                            onClick = { viewModel.cancelChronometer() }
                         ) {
                             Text(text = "Cancelar")
                         }
