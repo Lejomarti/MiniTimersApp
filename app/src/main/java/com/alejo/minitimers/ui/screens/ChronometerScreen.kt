@@ -1,5 +1,6 @@
 package com.alejo.minitimers.ui.screens
 
+import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,11 +28,16 @@ import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimerRing
 import com.alejo.minitimers.ui.components.TopBar
 import com.alejo.minitimers.ui.viewmodels.ChronometerViewModel
+import com.alejo.minitimers.ui.viewmodels.ChronometerViewModelFactory
 
 
 @Composable
 fun ChronometerScreen(navController: NavController) {
-    val viewModel: ChronometerViewModel = viewModel(LocalContext.current as ComponentActivity)
+    val context = LocalContext.current.applicationContext
+
+    val viewModel: ChronometerViewModel = viewModel(
+        factory = ChronometerViewModelFactory(context as Application)
+    )
 
     val chronometerWasInitialized by viewModel.chronometerWasInitialized.collectAsState()
     val chronometerIsRunning by viewModel.chronometerIsRunning.collectAsState()
