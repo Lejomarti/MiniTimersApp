@@ -1,138 +1,130 @@
 package com.alejo.minitimers.ui.viewmodels
 
+import android.app.Application
 import android.os.SystemClock
-import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alejo.minitimers.data.ChronometerDataStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class ChronometerViewModel(
-    private val chronometerDataStore: ChronometerDataStore
-) : ViewModel() {
+class ChronometerViewModel(application: Application):AndroidViewModel (application){
+    private val context = application.applicationContext
 
-    private val _chronometerWasInitialized = MutableStateFlow(false)
-    val chronometerWasInitialized: StateFlow<Boolean> = _chronometerWasInitialized
-
-    private val _chronometerIsRunning = MutableStateFlow(false)
-    val chronometerIsRunning: StateFlow<Boolean> = _chronometerIsRunning
-
-    private val _chronometerIsPaused = MutableStateFlow(false)
-    val chronometerIsPaused: StateFlow<Boolean> = _chronometerIsPaused
-
-    private val _startTime = MutableStateFlow(0L)
-    private val _elapsedTime = MutableStateFlow(0L)
-    val elapsedTime: StateFlow<Long> = _elapsedTime
-
-    private val _progress = MutableStateFlow(0f)
-    val progress: StateFlow<Float> = _progress
-
+    val chronometerWasInitialized = MutableStateFlow(false)
+    val chronometerIsRunning = MutableStateFlow(false)
+    val chronometerStartTime = MutableStateFlow(0L)
+    val chronometerElapsedTime = MutableStateFlow(0L)
+    var chronometerDisplayTime = MutableStateFlow("00:00:0")
+    val progressInMinute = MutableStateFlow(0f)
     private var timerJob: Job? = null
-
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("alejoIsTalking", "ChronometerViewModel cleared")
-        timerJob?.cancel()
-    }
-
-
-    fun pauseChronometer() {
-        if (_chronometerIsRunning.value) {
-            Log.d("alejoIsTalking", "pauseChronometer called")
-
-            _elapsedTime.value = SystemClock.elapsedRealtime() - _startTime.value
-            _chronometerIsRunning.value = false
-            _chronometerIsPaused.value = true
-            timerJob?.cancel()
-        }
-    }
-
-    fun resumeChronometer() {
-        if (_chronometerIsPaused.value) {
-            Log.d("alejoIsTalking", "resumeChronometer called")
-
-            _startTime.value = SystemClock.elapsedRealtime() - _elapsedTime.value
-            _chronometerIsRunning.value = true
-            _chronometerIsPaused.value = false
-            startTimerJob()
-        }
-    }
-
-
-    private fun startTimerJob() {
-        if (timerJob?.isActive == false) { // Solo inicia si no está activo
-            timerJob = viewModelScope.launch {
-                Log.d("alejoIsTalking", "timerJob started")
-                while (_chronometerIsRunning.value) {
-                    _elapsedTime.value = (SystemClock.elapsedRealtime() - _startTime.value)
-                    _progress.value = (_elapsedTime.value % 60000L) / 60000f
-                    delay(10L)
-                    Log.d("alejoIsTalking", "timerJob ticking: ${_elapsedTime.value}")
-                }
-                Log.d("alejoIsTalking", "timerJob stopped")
-            }
-        } else if (_chronometerIsRunning.value && timerJob == null) {
-            timerJob = viewModelScope.launch {
-                Log.d("alejoIsTalking", "timerJob started")
-                while (_chronometerIsRunning.value) {
-                    _elapsedTime.value = (SystemClock.elapsedRealtime() - _startTime.value)
-                    _progress.value = (_elapsedTime.value % 60000L) / 60000f
-                    delay(10L)
-                    Log.d("alejoIsTalking", "timerJob ticking: ${_elapsedTime.value}")
-                }
-                Log.d("alejoIsTalking", "timerJob stopped")
-            }
-        }
-    }
 
     init {
         viewModelScope.launch {
-            chronometerDataStore.startTime.collect { _startTime.value = it }
-            chronometerDataStore.elapsedTime.collect { _elapsedTime.value = it }
-            chronometerDataStore.isRunning.collect {
-                _chronometerIsRunning.value = it
-                _chronometerWasInitialized.value = it || _elapsedTime.value > 0
-            }
+            val wasInitialized = ChronometerDataStore.readWasInitialized(getApplication()).first()
+            val isRunning = ChronometerDataStore.readIsRunning(getApplication()).first()
+            val startTime = ChronometerDataStore.readStartTime(getApplication()).first()
+            val elapsedTime = ChronometerDataStore.readElapsedTime(getApplication()).first()
 
-            // Si estaba corriendo, reinicia el cronómetro
-            if (_chronometerIsRunning.value) {
-                startTimerJob()
+            chronometerWasInitialized.value = wasInitialized
+            chronometerIsRunning.value = isRunning
+            chronometerStartTime.value = startTime
+            chronometerElapsedTime.value = elapsedTime
+        }
+    }
+
+
+    private fun startTimerLoop() {
+        timerJob = viewModelScope.launch {
+            while (isActive && chronometerIsRunning.value) {
+                val now = SystemClock.elapsedRealtime()
+                val elapsed = now - chronometerStartTime.value + chronometerElapsedTime.value
+
+                chronometerDisplayTime.value = formatElapsedTime(elapsed)
+                progressInMinute.value = (elapsed % 60000).toFloat() / 60000f
+                delay(100)
             }
         }
     }
 
     fun startChronometer() {
+        val startTime = SystemClock.elapsedRealtime()
+        chronometerStartTime.value = startTime
+        chronometerElapsedTime.value = 0L
+        chronometerWasInitialized.value = true
+        chronometerIsRunning.value = true
+
+        timerJob?.cancel()
+        startTimerLoop()
+
         viewModelScope.launch {
-            val now = SystemClock.elapsedRealtime() - _elapsedTime.value
-            _startTime.value = now
-            _chronometerWasInitialized.value = true
-            _chronometerIsRunning.value = true
-            _chronometerIsPaused.value = false
+            ChronometerDataStore.saveStartTime(getApplication(), startTime)
+            ChronometerDataStore.saveElapsedTime(getApplication(), 0L)
+            ChronometerDataStore.saveWasInitialized(getApplication(), true)
+            ChronometerDataStore.saveIsRunning(getApplication(), true)
+        }
+    }
 
 
-                chronometerDataStore.saveStartTime(_startTime.value)
-                chronometerDataStore.saveIsRunning(true)
+    fun pauseChronometer() {
+        viewModelScope.launch {
+            timerJob?.cancel()
+            timerJob = null
 
-            startTimerJob()
+            val currentElapsed = SystemClock.elapsedRealtime() - chronometerStartTime.value
+            chronometerElapsedTime.value += currentElapsed
+            chronometerIsRunning.value = false
+
+            ChronometerDataStore.saveElapsedTime(context, chronometerElapsedTime.value)
+            ChronometerDataStore.saveIsRunning(context, false)
+        }
+    }
+
+    fun resumeChronometer() {
+        viewModelScope.launch {
+            val startTime = SystemClock.elapsedRealtime()
+            chronometerStartTime.value = startTime
+            chronometerIsRunning.value = true
+
+            ChronometerDataStore.saveStartTime(context, startTime)
+            ChronometerDataStore.saveIsRunning(context, true)
+
+            timerJob?.cancel()
+            timerJob = null
+            startTimerLoop()
         }
     }
 
     fun cancelChronometer() {
-        _chronometerWasInitialized.value = false
-        _chronometerIsRunning.value = false
-        _chronometerIsPaused.value = false
-        _elapsedTime.value = 0L
-        _progress.value = 0f
-
-        timerJob?.cancel()
-
         viewModelScope.launch {
-            chronometerDataStore.clear() // ← si no lo tienes, agrégalo con inyección o parámetro
+            timerJob?.cancel()
+            timerJob = null
+
+            chronometerWasInitialized.value = false
+            chronometerIsRunning.value = false
+            chronometerStartTime.value = 0L
+            chronometerElapsedTime.value = 0L
+            chronometerDisplayTime.value = "00:00:0"
+            progressInMinute.value = 0f
+
+            ChronometerDataStore.saveWasInitialized(getApplication(), false)
+            ChronometerDataStore.saveIsRunning(getApplication(), false)
+            ChronometerDataStore.saveStartTime(getApplication(), 0L)
+            ChronometerDataStore.saveElapsedTime(getApplication(), 0L)
         }
     }
+
+    private fun formatElapsedTime(milliseconds: Long): String {
+        val totalSeconds = milliseconds / 1000
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        val tenths = (milliseconds % 1000) / 100
+
+        return String.format("%02d:%02d:%01d", minutes, seconds, tenths)
+    }
+
 }
