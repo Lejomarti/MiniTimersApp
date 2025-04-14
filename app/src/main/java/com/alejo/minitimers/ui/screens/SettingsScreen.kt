@@ -14,11 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.SettingsDataStore
@@ -31,10 +29,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(navController: NavController, settingsDataStore: SettingsDataStore) {
-    val isDarkMode by settingsDataStore.isDarkMode.collectAsState(initial = false)
-    val selectedThemeColor by settingsDataStore.themeColor.collectAsState(initial = "Blue")
-    var expanded by remember { mutableStateOf(false) }
+fun SettingsScreen(navController: NavController) {
+    val context = LocalContext.current
+    val isDarkMode by SettingsDataStore.isDarkMode(context).collectAsState(initial = false)
+    val selectedThemeColor by SettingsDataStore.themeColor(context).collectAsState(initial = "Blue")
 
     Scaffold(
         topBar = { TopBar(title = "Settings") },
@@ -59,33 +57,20 @@ fun SettingsScreen(navController: NavController, settingsDataStore: SettingsData
                     onCheckedChange = { newValue ->
                         // Guardar el nuevo valor en DataStore
                         CoroutineScope(Dispatchers.IO).launch {
-                            settingsDataStore.saveDarkMode(newValue)
+                            SettingsDataStore.saveDarkMode(context, newValue)
                         }
                     }
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-//
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(vertical = 8.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Text(text = "Theme color", style = MaterialTheme.typography.titleMedium)
-//                Spacer(modifier = Modifier.weight(1f))
-//                Button(onClick = { expanded = true }) {
-//                    Text(text = selectedThemeColor)
-//                }
-//            }
 
             ColorDropdownMenu(
                 themeColors = themeColors,
                 selectedThemeColor = selectedThemeColor,
                 onColorSelected = { colorName ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveThemeColor(colorName)
+                        SettingsDataStore.saveThemeColor(context, colorName)
                     }
                 }
             )

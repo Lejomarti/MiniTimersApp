@@ -4,16 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.ui.screens.AddTimerScreen
+import com.alejo.minitimers.ui.screens.ChronometerScreen
 import com.alejo.minitimers.ui.screens.MiniTimersScreen
 import com.alejo.minitimers.ui.screens.SettingsScreen
 import com.alejo.minitimers.ui.screens.TimerDetailsScreen
-import com.alejo.minitimers.ui.screens.ChronometerScreen
 
 @Composable
-fun AppNavigation(timersDataStore: TimersDataStore, settingsDataStore: SettingsDataStore){
+fun AppNavigation(timersDataStore: TimersDataStore){
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppScreens.MiniTimersScreen.route){
         composable(route = AppScreens.MiniTimersScreen.route){
@@ -30,7 +29,7 @@ fun AppNavigation(timersDataStore: TimersDataStore, settingsDataStore: SettingsD
           ChronometerScreen(navController)
         }
         composable(route = AppScreens.SettingsScreen.route) {
-            SettingsScreen(navController,settingsDataStore)
+            SettingsScreen(navController)
         }
     }
 }

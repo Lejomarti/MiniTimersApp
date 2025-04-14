@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppNavigation
@@ -18,12 +17,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val timersDataStore = TimersDataStore(this)
-        val settingsDataStore = SettingsDataStore(this)
         setContent {
-            val isDarkMode by settingsDataStore.isDarkMode.collectAsState(initial = false)
-            val themeColorName by settingsDataStore.themeColor.collectAsState(initial = "Blue")
+            val isDarkMode by SettingsDataStore.isDarkMode(context = this).collectAsState(initial = false)
+            val themeColorName by SettingsDataStore.themeColor(context = this).collectAsState(initial = "Blue")
             MiniTimersTheme(darkTheme = isDarkMode, themeColorName = themeColorName) {
-                MiniTimersApp(timersDataStore,settingsDataStore)
+                MiniTimersApp(timersDataStore)
             }
         }
     }
@@ -31,8 +29,8 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MiniTimersApp(timersDataStore: TimersDataStore, settingsDataStore: SettingsDataStore) {
-            AppNavigation(timersDataStore = timersDataStore,settingsDataStore = settingsDataStore)
+fun MiniTimersApp(timersDataStore: TimersDataStore) {
+            AppNavigation(timersDataStore = timersDataStore)
 }
 
 //@Preview(showBackground = true)

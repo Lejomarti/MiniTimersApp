@@ -11,30 +11,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 
-class SettingsDataStore(private val context: Context){
-    companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("theme_settings")
-        val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
-        val THEME_COLOR = stringPreferencesKey("theme_color")
+object SettingsDataStore {
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("theme_settings")
+    private val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
+    private val THEME_COLOR = stringPreferencesKey("theme_color")
+
+    fun isDarkMode(context: Context): Flow<Boolean> = context.dataStore.data.map { it[IS_DARK_MODE] ?: false }
+
+    suspend fun saveDarkMode(context: Context, isDarkMode: Boolean) {
+        context.dataStore.edit { it[IS_DARK_MODE] = isDarkMode }
     }
 
-    val isDarkMode: Flow<Boolean> = context.dataStore.data
-        .map { preferences ->
-            preferences[IS_DARK_MODE] ?: false
-        }
+    fun themeColor(context: Context): Flow<String> = context.dataStore.data.map { it[THEME_COLOR] ?: "Blue" }
 
-    suspend fun saveDarkMode(isDarkMode: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[IS_DARK_MODE] = isDarkMode
-        }
-    }
-
-    val themeColor: Flow<String> = context.dataStore.data
-        .map { preferences -> preferences[THEME_COLOR] ?: "Blue" }
-
-    suspend fun saveThemeColor(colorName: String) {
-        context.dataStore.edit { preferences ->
-            preferences[THEME_COLOR] = colorName
-        }
+    suspend fun saveThemeColor(context: Context, colorName: String) {
+        context.dataStore.edit {it[THEME_COLOR] = colorName}
     }
 }

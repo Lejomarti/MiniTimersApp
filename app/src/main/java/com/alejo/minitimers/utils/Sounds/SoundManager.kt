@@ -1,4 +1,4 @@
-package com.alejo.minitimers.utils
+package com.alejo.minitimers.utils.Sounds
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -20,16 +20,14 @@ class SoundManager(context: Context) {
             )
             .build()
 
-        // Cargar el sonido desde res/raw
         soundId = soundPool.load(context, R.raw.timer_sound, 1)
     }
 
-    // Función para reproducir el sonido
+
     fun playSound() {
         soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
     }
 
-    // Liberar recursos cuando ya no se usa
     fun release() {
         soundPool.release()
     }
