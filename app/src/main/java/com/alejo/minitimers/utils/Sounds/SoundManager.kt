@@ -3,13 +3,15 @@ package com.alejo.minitimers.utils.Sounds
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
-import com.alejo.minitimers.R
 
-class SoundManager(context: Context) {
-    private val soundPool: SoundPool
-    private var soundId: Int = 0
 
-    init {
+
+class SoundManager {
+    private var soundPool: SoundPool? = null
+
+    fun playSound(context: Context, resId: Int) {
+        soundPool?.release()
+
         soundPool = SoundPool.Builder()
             .setMaxStreams(1)
             .setAudioAttributes(
@@ -20,15 +22,19 @@ class SoundManager(context: Context) {
             )
             .build()
 
-        soundId = soundPool.load(context, R.raw.timer_sound, 1)
-    }
+        val sp = soundPool ?: return
 
+        val soundId = sp.load(context, resId, 1)
 
-    fun playSound() {
-        soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
+        sp.setOnLoadCompleteListener { _, loadedSoundId, status ->
+            if (status == 0) {
+                sp.play(loadedSoundId, 1f, 1f, 1, 0, 1f)
+            }
+        }
     }
 
     fun release() {
-        soundPool.release()
+        soundPool?.release()
+        soundPool = null
     }
 }
