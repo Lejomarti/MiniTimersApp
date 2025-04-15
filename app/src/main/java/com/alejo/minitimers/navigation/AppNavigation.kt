@@ -29,7 +29,7 @@ fun AppNavigation(timersDataStore: TimersDataStore){
           ChronometerScreen(navController)
         }
         composable(route = AppScreens.SettingsScreen.route) {
-            SettingsScreen(navController)
+            SettingsScreen(navController, timersDataStore)
         }
     }
 }

@@ -39,7 +39,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     val currentTimer by viewModel.currentTimer
     val timeRemaining by viewModel.timeRemaining
 
-    var showDialog by remember { mutableStateOf(false) }
 //    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -113,15 +112,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     )
                 }
 
-                Button(
-                    modifier = Modifier.width(300.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red, contentColor = Color.White),
-                    onClick = {
-                        showDialog = true
-                    }
-                ) {
-                    Text(text = "Eliminar todo")
-                }
 
                 // Botones de control
                 Row(
@@ -175,26 +165,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             Text(text = "Cancelar")
                         }
                     }
-                }
-                if(showDialog){
-                    AlertDialog(
-                        onDismissRequest = { showDialog = false },
-                        title = { Text("Eliminar todo", color = Color.Red) },
-                        text = { Text("¿Estás seguro de que quieres eliminar todos los temporizadores?") },
-                        confirmButton = {
-                            TextButton( onClick = {
-                                showDialog = false
-                                viewModel.removeAllTimers()
-                            }) {
-                                Text("Si")
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = { showDialog = false }) {
-                                Text("No")
-                            }
-                        }
-                    )
                 }
             }
         }
