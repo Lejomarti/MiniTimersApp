@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.data.SettingsDataStore
+import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppScreens
 import com.alejo.minitimers.ui.components.BottomNavBar
@@ -40,7 +42,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     var showDialog by remember { mutableStateOf(false) }
 //    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val soundManager = remember { SoundManager(context) }
+
+    val soundManager = remember { SoundManager() }
+    val selectedSound by SettingsDataStore.selectedSound(context).collectAsState(initial = "timer")
+    val soundOption = SoundList.sounds.find { it.id == selectedSound }
+    val resId = soundOption?.resId
 
     LaunchedEffect(timers) {
     }
@@ -127,7 +133,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             modifier = Modifier.width(300.dp),
                             onClick = {
                                 if (upperList.isNotEmpty()) {
-                                    viewModel.startTimer { soundManager.playSound() }
+                                    viewModel.startTimer {
+                                        resId?.let {
+                                            soundManager.playSound(context,it)
+                                        }
+                                    }
                                 }
                             },
                             enabled = upperList.isNotEmpty(),
@@ -142,7 +152,9 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             modifier = Modifier.width(180.dp),
                             onClick = {
                                 if (isPaused) {
-                                    viewModel.resumeTimer { soundManager.playSound() }
+                                    viewModel.resumeTimer { resId?.let {
+                                        soundManager.playSound(context,it)
+                                    } }
                                 } else {
                                     viewModel.pauseTimer()
                                 }

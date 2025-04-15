@@ -20,8 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alejo.minitimers.data.SettingsDataStore
+import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.ColorDropdownMenu
+import com.alejo.minitimers.ui.components.SoundDropdownMenu
 import com.alejo.minitimers.ui.components.TopBar
 import com.alejo.minitimers.ui.theme.themeColors
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +35,7 @@ fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
     val isDarkMode by SettingsDataStore.isDarkMode(context).collectAsState(initial = false)
     val selectedThemeColor by SettingsDataStore.themeColor(context).collectAsState(initial = "Blue")
+    val selectedSound by SettingsDataStore.selectedSound(context).collectAsState(initial = "timer")
 
     Scaffold(
         topBar = { TopBar(title = "Settings") },
@@ -71,6 +74,16 @@ fun SettingsScreen(navController: NavController) {
                 onColorSelected = { colorName ->
                     CoroutineScope(Dispatchers.IO).launch {
                         SettingsDataStore.saveThemeColor(context, colorName)
+                    }
+                }
+            )
+
+            SoundDropdownMenu(
+                soundList = SoundList.sounds,
+                selectedSound = selectedSound,
+                onSoundSelected = { soundName ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        SettingsDataStore.saveSelectedSound(context, soundName)
                     }
                 }
             )
