@@ -156,6 +156,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     if (wasInitialized) {
                         Button(
                             modifier = Modifier.width(180.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF811E2A)),
                             onClick = {
                                 viewModel.cancelTimer()
                             }
