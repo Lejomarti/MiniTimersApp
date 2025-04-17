@@ -90,7 +90,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             }
                         }
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.weight(1f))
 
                     // Anillo de temporizador
                     TimerRing(
@@ -100,7 +100,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         ),
                         additionalText = formatTime(elapsedTime + 50)
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.weight(1f))
 
                     // Segundo carrusel
                     TimersCarousel(
@@ -111,11 +111,9 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         onClick = {}
                     )
                 }
-
-
                 // Botones de control
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     if (!wasInitialized) {
