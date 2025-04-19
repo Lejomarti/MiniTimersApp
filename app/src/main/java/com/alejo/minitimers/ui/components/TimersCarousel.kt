@@ -12,18 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 
 @Composable
 fun TimersCarousel(
-    timers: List<Long>,
+    timers: List<Pair<String, Long>>,
     color: Color,
     enabled: Boolean,
     navController: NavController?,
-    onClick: (Long) -> Unit
+    onClick: (String) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val carouselHeight = screenHeight * 0.15f
@@ -42,8 +41,8 @@ fun TimersCarousel(
             )
         }
 
-        items(timers) { time ->
-            TimerCard(timeText = time, color = color, onClick = { onClick(time) })
+        items(timers) { (id,time) ->
+            TimerCard(timeText = time, color = color, onClick = { onClick(id) })
         }
         item {
             PlusIcon(enabled, navController)
@@ -59,25 +58,25 @@ fun TimersCarousel(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun MinitimersCarouselPreview() {
-    val timersList =listOf(
-        5_000L,
-        15_000L,
-        30_000L,
-        60_000L,
-        120_000L,
-        300_000L,
-    )
-
-    TimersCarousel(
-            timers = timersList,
-            color = Color.Red,
-            enabled = false,
-            navController = null,
-            onClick = { }
-        )
-
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MinitimersCarouselPreview() {
+//    val timersList =listOf(
+//        5_000L,
+//        15_000L,
+//        30_000L,
+//        60_000L,
+//        120_000L,
+//        300_000L,
+//    )
+//
+//    TimersCarousel(
+//            timers = timersList,
+//            color = Color.Red,
+//            enabled = false,
+//            navController = null,
+//            onClick = { }
+//        )
+//
+//}
 

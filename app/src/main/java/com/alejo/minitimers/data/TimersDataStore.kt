@@ -14,8 +14,6 @@ val Context.dataStore by preferencesDataStore("timers_datastore")
 
 class TimersDataStore(private val context: Context) {
 
-    private val TIMER_LIST_KEY = longPreferencesKey("timer_list")
-
     // Recuperar la lista de temporizadores guardados
     val timersFlow: Flow<List<Pair<String,Long>>> = context.dataStore.data
         .map { preferences ->
@@ -25,10 +23,9 @@ class TimersDataStore(private val context: Context) {
         }
 
     // Guardar un nuevo temporizador
-    suspend fun saveTimer(time: Long) {
+    suspend fun saveTimer(timerId: String, time: Long) {
         context.dataStore.edit { preferences ->
-            val newKey = "timer_${System.currentTimeMillis()}"
-            preferences[longPreferencesKey(newKey)] = time
+            preferences[longPreferencesKey(timerId)] = time
         }
     }
 

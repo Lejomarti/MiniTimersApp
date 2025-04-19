@@ -34,6 +34,14 @@ class ChronometerViewModel(application: Application):AndroidViewModel (applicati
             chronometerIsRunning.value = isRunning
             chronometerStartTime.value = startTime
             chronometerElapsedTime.value = elapsedTime
+
+            if (isRunning) {
+                startTimerLoop()
+            } else {
+                val totalElapsed = elapsedTime
+                chronometerDisplayTime.value = formatElapsedTime(totalElapsed)
+                progressInMinute.value = (totalElapsed % 60000).toFloat() / 60000f
+            }
         }
     }
 

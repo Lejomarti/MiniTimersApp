@@ -52,12 +52,13 @@ fun TimerDetailsScreen(
     LaunchedEffect(timerId) {
         timerId?.let {
             timerValue = timersDataStore.getTimerById(it)
+            Log.d("alejoIsTalking", "El ID del timer seleccionado es: $timerId")
         }
     }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Añadir temporizador") },
+                title = { Text("Modificar temporizador") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

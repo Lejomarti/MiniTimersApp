@@ -59,7 +59,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(bottom = 16.dp,top = 16.dp)
+                .padding(bottom = 16.dp, top = 16.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -72,21 +72,15 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                 ) {
                     // Primer carrusel
                     TimersCarousel(
-                        timers = upperList.map { it.second },
+                        timers = upperList,
                         MaterialTheme.colorScheme.primary,
                         enabled = !wasInitialized,
                         navController,
-                        onClick = { selectedTime ->
+                        onClick = { timerId ->
                             if (!wasInitialized) {
-                                val keyToEdit =
-                                    upperList.find { it.second == selectedTime }?.first
-                                keyToEdit?.let { key ->
-                                    navController.navigate(
-                                        AppScreens.TimerDetailsScreen.createRoute(
-                                            key
-                                        )
-                                    )
-                                }
+                                navController.navigate(
+                                    AppScreens.TimerDetailsScreen.createRoute(timerId)
+                                )
                             }
                         }
                     )
@@ -113,7 +107,9 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                 }
                 // Botones de control
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     if (!wasInitialized) {
@@ -123,13 +119,16 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                                 if (upperList.isNotEmpty()) {
                                     viewModel.startTimer {
                                         resId?.let {
-                                            soundManager.playSound(context,it)
+                                            soundManager.playSound(context, it)
                                         }
                                     }
                                 }
                             },
                             enabled = upperList.isNotEmpty(),
-                            colors = ButtonDefaults.buttonColors(disabledContainerColor = Color.Gray, disabledContentColor = Color.DarkGray)
+                            colors = ButtonDefaults.buttonColors(
+                                disabledContainerColor = Color.Gray,
+                                disabledContentColor = Color.DarkGray
+                            )
                         ) {
                             Text(text = "Iniciar")
                         }
@@ -140,9 +139,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             modifier = Modifier.width(180.dp),
                             onClick = {
                                 if (isPaused) {
-                                    viewModel.resumeTimer { resId?.let {
-                                        soundManager.playSound(context,it)
-                                    } }
+                                    viewModel.resumeTimer {
+                                        resId?.let {
+                                            soundManager.playSound(context, it)
+                                        }
+                                    }
                                 } else {
                                     viewModel.pauseTimer()
                                 }
@@ -156,6 +157,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     if (wasInitialized) {
                         Button(
                             modifier = Modifier.width(180.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF811E2A)),
                             onClick = {
                                 viewModel.cancelTimer()
                             }
