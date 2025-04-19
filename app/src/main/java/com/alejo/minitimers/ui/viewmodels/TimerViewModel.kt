@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.alejo.minitimers.data.TimersDataStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,11 +35,11 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
     val elapsedTime: State<Long> = _elapsedTime
 
     private val _upperList = mutableStateListOf<Pair<String, Long>>()
-    private val _lowerList = mutableStateListOf<Long>()
+    private val _lowerList = mutableStateListOf<Pair<String, Long>>()
     private val _currentTimer = mutableStateOf<Long?>(null)
 
     val upperList: List<Pair<String, Long>> = _upperList
-    val lowerList: List<Long> = _lowerList
+    val lowerList: List<Pair<String,Long>> = _lowerList
     val currentTimer: State<Long?> = _currentTimer
 
     private val _timeRemaining = mutableLongStateOf(0L)
@@ -135,7 +134,7 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
 
                 override fun onFinish() {
                     _currentTimer.value?.let {
-                        _lowerList.add(it)
+                        _lowerList.add(Pair(_currentTimer.value.toString(), it))
                         _currentTimer.value = null
                         onTimerFinished() // Llama a la función para manejar el sonido y el siguiente timer
                     }
@@ -157,7 +156,7 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
 
     fun onTimerFinish(playSound: () -> Unit) {
         _currentTimer.value?.let {
-            _lowerList.add(it)
+            _lowerList.add(Pair(_currentTimer.value.toString(), it))
             _currentTimer.value = null
             playSound()
         }
