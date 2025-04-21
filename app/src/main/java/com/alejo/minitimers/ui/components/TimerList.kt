@@ -20,13 +20,13 @@ import com.alejo.minitimers.data.PersonalizedTimer
 fun TimerList(personalizedTimers: List<PersonalizedTimer>, onTimerClick: (Long) -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Fixed(4),
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 0.dp, 16.dp, 0.dp),// Hacemos que tome solo el espacio necesario
+            .padding(12.dp, 0.dp, 12.dp, 0.dp),
         contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(personalizedTimers) { timer ->
             TimerCard(
