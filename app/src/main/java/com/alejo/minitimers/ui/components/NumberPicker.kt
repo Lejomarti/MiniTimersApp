@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun VerticalNumberPicker(
-    modifier: Modifier = Modifier,
     width: Dp = 45.dp,
     min: Int = 0,
     max: Int = 59,
@@ -36,16 +34,11 @@ fun VerticalNumberPicker(
     onValueChange: (Int) -> Unit = {},
     text: String = "time"
 ) {
-    val textColor = MaterialTheme.colorScheme.onBackground
-    val buttonColor = MaterialTheme.colorScheme.primary
-
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text, modifier = Modifier.padding(10.dp), style = MaterialTheme.typography.labelSmall)
         PickerButton(
             size = width,
             icon = Icons.Filled.KeyboardArrowUp,
-//            enabled = selectedValue < max,
-            buttonColor = buttonColor,
             onClick = {
                 val newValue = if (selectedValue >= max) min else selectedValue + 1
                 onValueChange(newValue)
@@ -64,8 +57,6 @@ fun VerticalNumberPicker(
         PickerButton(
             size = width,
             icon = Icons.Filled.KeyboardArrowDown,
-//            enabled = selectedValue > min,
-            buttonColor = buttonColor,
             onClick = {
                 val newValue = if (selectedValue <= min) max else selectedValue - 1
                 onValueChange(newValue)
@@ -78,8 +69,6 @@ fun VerticalNumberPicker(
 fun PickerButton(
     size: Dp = 45.dp,
     icon: ImageVector,
-    enabled: Boolean = true,
-    buttonColor: Color,
     onClick: () -> Unit = {}
 ) {
     Box(
@@ -87,14 +76,14 @@ fun PickerButton(
             .padding(8.dp)
             .size(size)
             .clip(CircleShape)
-            .background(if (enabled) buttonColor else Color.Gray) // Se adapta al tema
-            .clickable(enabled = enabled, onClick = onClick),
+            .background(MaterialTheme.colorScheme.primary)
+            .clickable(onClick = { onClick() }),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimary // Color del ícono
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
