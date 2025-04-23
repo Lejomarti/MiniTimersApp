@@ -56,7 +56,11 @@ fun SoundDropdownMenu(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = soundOption.name)
+                            Text(
+                                text = soundOption.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         }
                     },
                     onClick = {

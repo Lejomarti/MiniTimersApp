@@ -71,7 +71,6 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Switch para activar/desactivar modo oscuro
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -88,7 +87,6 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
                     }
                 )
             }
-
 
             ColorDropdownMenu(
                 themeColors = themeColors,

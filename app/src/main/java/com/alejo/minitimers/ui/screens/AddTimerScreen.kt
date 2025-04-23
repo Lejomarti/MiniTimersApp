@@ -84,6 +84,7 @@ fun AddTimerContent(navController: NavController, timersDataStore: TimersDataSto
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
+        Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             TimeSelector(selectedHour = selectedHour,
                 onHourChange = { selectedHour = it },

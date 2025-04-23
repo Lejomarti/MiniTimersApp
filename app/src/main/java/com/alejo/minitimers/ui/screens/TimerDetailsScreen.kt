@@ -61,7 +61,10 @@ fun TimerDetailsScreen(
                 title = { Text("Modificar temporizador") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
@@ -74,8 +77,8 @@ fun TimerDetailsScreen(
                 .padding(bottom = 16.dp)
 
         ) {
-            timerValue?.let{
-                EditTimerContent(navController, timerId, timerValue!!,timersDataStore, scope)
+            timerValue?.let {
+                EditTimerContent(navController, timerId, timerValue!!, timersDataStore, scope)
             }
         }
     }
@@ -98,8 +101,13 @@ fun EditTimerContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
         TimeSelector(
             selectedHour = selectedHour,
             onHourChange = { selectedHour = it },
@@ -110,38 +118,44 @@ fun EditTimerContent(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly){
-    Button(onClick = {
-        val newTime = (selectedHour * 3600_000L + selectedMinute * 60_000L + selectedSecond * 1_000L)
-        timerId?.let { id ->
-            scope.launch {
-                timersDataStore.updateTimer(id, newTime) // Guardar el nuevo tiempo
-                navController.popBackStack() // Volver a la pantalla anterior
-            }
         }
 
-    }){
-        Text("Guardar")
-    }
-
-    Button(
-        colors = ButtonDefaults.buttonColors(Color.Red),
-        onClick = {
-            timerId?.let { id ->
-                scope.launch {
-                    Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
-                    timersDataStore.removeTimer(id)
-                    navController.popBackStack()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        )
+        {
+            Button(onClick = {
+                val newTime =
+                    (selectedHour * 3600_000L + selectedMinute * 60_000L + selectedSecond * 1_000L)
+                timerId?.let { id ->
+                    scope.launch {
+                        timersDataStore.updateTimer(id, newTime)
+                        navController.popBackStack()
+                    }
                 }
 
+            }) {
+                Text("Guardar")
+            }
+
+            Button(
+                colors = ButtonDefaults.buttonColors(Color.Red),
+                onClick = {
+                    timerId?.let { id ->
+                        scope.launch {
+                            Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
+                            timersDataStore.removeTimer(id)
+                            navController.popBackStack()
+                        }
+
+                    }
+                }
+
+            ) {
+                Text("Eliminar Temporizador")
             }
         }
-
-    ) {
-        Text("Eliminar Temporizador")
-    }
-}
     }
 }
