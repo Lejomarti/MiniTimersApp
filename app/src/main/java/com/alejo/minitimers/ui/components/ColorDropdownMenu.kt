@@ -52,7 +52,7 @@ fun ColorDropdownMenu(
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .background(themeColors[colorName]?.get(0) ?: Color.Gray) // Usa el color primario
+                                    .background(themeColors[colorName]?.get(0) ?: Color.Gray)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(colorName, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)

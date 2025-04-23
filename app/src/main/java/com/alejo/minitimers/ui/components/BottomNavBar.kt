@@ -55,10 +55,3 @@ fun BottomNavBar(navController: NavController) {
             }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun BottomNavBarPreview() {
-//    MiniTimersTheme {
-//    }
-//}

@@ -63,7 +63,6 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
                 .padding(paddingValues)
                 .padding(16.dp),
         ) {
-            //Titulo de la sección del menu
             Text(
                 text = "Theme Settings",
                 style = MaterialTheme.typography.labelSmall,
@@ -133,7 +132,6 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
             ) {
                 Text(text = "Eliminar temporalizadores")
             }
-
 
             if (showDialog) {
                 AlertDialog(

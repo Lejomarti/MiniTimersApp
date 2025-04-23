@@ -50,8 +50,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
     LaunchedEffect(timers) {
     }
-
-    // UI
     Scaffold(
         topBar = { TopBar("Mini Timer") },
         bottomBar = { BottomNavBar(navController = navController) }
@@ -71,7 +69,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Primer carrusel
                     TimersCarousel(
                         timers = upperList,
                         MaterialTheme.colorScheme.primary,
@@ -87,7 +84,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     )
                     Spacer(modifier = Modifier.weight(1f))
 
-                    // Anillo de temporizador
                     TimerRing(
                         progress = timeRemaining / (currentTimer ?: 1).toFloat(),
                         timeText = if (!wasInitialized) formatTime(upperList.sumOf { it.second }) else formatTime(
@@ -102,8 +98,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         }
                     )
                     Spacer(modifier = Modifier.weight(1f))
-
-                    // Segundo carrusel
                     TimersCarousel(
                         timers = lowerList,
                         color = Color.LightGray,
@@ -112,7 +106,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         onClick = {}
                     )
                 }
-                // Botones de control
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

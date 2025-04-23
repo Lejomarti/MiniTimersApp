@@ -57,26 +57,3 @@ fun TimersCarousel(
     }
 }
 
-
-//@Preview(showBackground = true)
-//@Composable
-//fun MinitimersCarouselPreview() {
-//    val timersList =listOf(
-//        5_000L,
-//        15_000L,
-//        30_000L,
-//        60_000L,
-//        120_000L,
-//        300_000L,
-//    )
-//
-//    TimersCarousel(
-//            timers = timersList,
-//            color = Color.Red,
-//            enabled = false,
-//            navController = null,
-//            onClick = { }
-//        )
-//
-//}
-
