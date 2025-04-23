@@ -67,6 +67,7 @@ fun ChronometerScreen(navController: NavController) {
                     progress = progressInMinute,
                     timeText = chronometerDisplayTime,
                     additionalText = ""
+
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(

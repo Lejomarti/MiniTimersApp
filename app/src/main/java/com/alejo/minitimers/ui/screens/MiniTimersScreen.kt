@@ -1,6 +1,7 @@
 package com.alejo.minitimers.ui.screens
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -92,7 +93,13 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         timeText = if (!wasInitialized) formatTime(upperList.sumOf { it.second }) else formatTime(
                             timeRemaining
                         ),
-                        additionalText = formatTime(elapsedTime + 50)
+                        additionalText = formatTime(elapsedTime + 50),
+                        onLongPress = {
+                            if(wasInitialized){
+                            viewModel.skipCurrentTimer{soundManager.playSound(context, resId!!)}
+                            Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
+                        }
+                        }
                     )
                     Spacer(modifier = Modifier.weight(1f))
 

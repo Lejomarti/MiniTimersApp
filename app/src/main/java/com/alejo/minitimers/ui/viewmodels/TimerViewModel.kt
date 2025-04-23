@@ -211,4 +211,21 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
             timersDataStore.removeAllTimers()
         }
     }
+
+    fun skipCurrentTimer(onTimerFinished: () -> Unit){
+        countDownTimer?.cancel()
+
+        _currentTimer.value?.let {
+            _lowerList.add(Pair(it.toString(), it))
+            _currentTimer.value = null
+            onTimerFinished()
+        }
+
+        if (_upperList.isNotEmpty()) {
+            startTimer(onTimerFinished)
+        } else {
+            _isRunning.value = false
+            pauseChrono()
+        }
+    }
 }
