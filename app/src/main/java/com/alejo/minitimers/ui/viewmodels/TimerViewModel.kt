@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel() {
-    //TODO: Hacer el viewmodel para el timer y despejar el MiniTimerScreen de tanta logica
-
     private val _timers = MutableStateFlow<List<Pair<String, Long>>>(emptyList())
     val timers: StateFlow<List<Pair<String, Long>>> = _timers
 
