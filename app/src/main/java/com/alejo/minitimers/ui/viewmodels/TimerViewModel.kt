@@ -66,7 +66,7 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
 
     // Función para iniciar el cronómetro
     private fun startChrono() {
-        chronoJob?.cancel() // Cancelar cualquier trabajo previo
+        chronoJob?.cancel()
         chronoJob = viewModelScope.launch {
             if (_isPaused.value) {
                 _startTime.longValue = SystemClock.elapsedRealtime() - _pausedTime.longValue
@@ -77,7 +77,7 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
             _isRunning.value = true
             while (_isRunning.value) {
                 _elapsedTime.longValue = SystemClock.elapsedRealtime() - _startTime.longValue
-                delay(100) // Actualización frecuente
+                delay(100)
             }
         }
     }
@@ -134,21 +134,21 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
                     _currentTimer.value?.let {
                         _lowerList.add(Pair(_currentTimer.value.toString(), it))
                         _currentTimer.value = null
-                        onTimerFinished() // Llama a la función para manejar el sonido y el siguiente timer
+                        onTimerFinished()
                     }
 
                     if (_upperList.isNotEmpty()) {
-                        startTimer(onTimerFinished) // Continúa con el siguiente temporizador sin tocar el cronómetro
+                        startTimer(onTimerFinished)
                     } else {
                         _isRunning.value = false
-                        pauseChrono() // Solo se pausa cuando todos los timers terminan
+                        pauseChrono()
                     }
                 }
             }.start()
         } else {
             _isRunning.value = false
             _wasInitialized.value = false
-            pauseChrono() // Se detiene el cronómetro solo si ya no hay timers
+            pauseChrono()
         }
     }
 
@@ -160,9 +160,10 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
         }
 
         if (_upperList.isNotEmpty()) {
-            startTimer(playSound) // Continúa con el siguiente temporizador sin tocar el cronómetro
+            startTimer(playSound)
         } else {
             _isRunning.value = false
+            _timeRemaining.longValue = 0L
             pauseChrono()
         }
     }

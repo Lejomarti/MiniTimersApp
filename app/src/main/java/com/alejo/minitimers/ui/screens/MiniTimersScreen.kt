@@ -134,7 +134,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         }
                     }
 
-                    if (wasInitialized) {
+                    if (wasInitialized && timeRemaining > 20L) {
                         Button(
                             modifier = Modifier.width(180.dp),
                             onClick = {
