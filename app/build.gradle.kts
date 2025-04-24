@@ -50,14 +50,9 @@ android {
 }
 
 dependencies {
-    val nav_version = "2.8.0"
-
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(libs.androidx.navigation.compose)
     implementation (libs.dev.snapper)
-
     implementation(libs.androidx.datastore.preferences)
-
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -75,9 +70,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.compose.material3:material3:1.3.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
-
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material3)
+    implementation(libs.androidx.core.ktx.v1120)
 }
