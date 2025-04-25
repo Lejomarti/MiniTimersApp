@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.alejo.minitimers.R
 
 @Composable
 fun TimeSelector(
@@ -32,21 +34,21 @@ fun TimeSelector(
                 max = 24,
                 selectedValue = selectedHour,
                 onValueChange = onHourChange,
-                text = "Hours"
+                text = stringResource(R.string.hours)
             )
             VerticalNumberPicker(
                 min = 0,
                 max = 59,
                 selectedValue = selectedMinute,
                 onValueChange = onMinuteChange,
-                text = "Minutes"
+                text = stringResource(R.string.minutes)
             )
             VerticalNumberPicker(
                 min = 0,
                 max = 59,
                 selectedValue = selectedSecond,
                 onValueChange = onSecondChange,
-                text = "Seconds"
+                text = stringResource(R.string.seconds)
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.alejo.minitimers.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,11 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TimerRing(progress: Float, timeText: String, additionalText: String) {
+fun TimerRing(
+    progress: Float,
+    timeText: String,
+    additionalText: String,
+    onLongPress: (() -> Unit)? = null
+) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val timerRingHeight = screenHeight * 0.35f
 
@@ -27,15 +34,20 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
         val textColor = MaterialTheme.colorScheme.onBackground
         val secondaryTextColor = MaterialTheme.colorScheme.onSurfaceVariant
 
-        // Canvas para dibujar el anillo progresivo
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .height(timerRingHeight)
                 .aspectRatio(1f)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            onLongPress?.invoke()
+                        }
+                    )
+                }
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
-                // Anillo de fondo
                 drawArc(
                     color = Color.Gray,
                     startAngle = 270f,
@@ -43,8 +55,6 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
                     useCenter = false,
                     style = Stroke(16.dp.toPx(), cap = StrokeCap.Round)
                 )
-
-                // Anillo de progreso
                 drawArc(
                     color = ringColor,
                     startAngle = 270f,
@@ -54,7 +64,6 @@ fun TimerRing(progress: Float, timeText: String, additionalText: String) {
                 )
             }
 
-            // Texto dentro del anillo
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

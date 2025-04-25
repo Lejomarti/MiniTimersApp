@@ -84,16 +84,6 @@ fun MiniTimersTheme(
  ) {
     val selectedColors = themeColors[themeColorName] ?: themeColors["Blue"]!! // Valor por defecto
 
-//     val colorScheme = when {
-//         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//             val context = LocalContext.current
-//             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//         }
-//
-//         darkTheme -> DarkColors
-//         else -> LightColors
-//     }
-
     fun blendColors(color1: Color, color2: Color, ratio: Float): Color {
         val blendedColor = ColorUtils.blendARGB(color1.toArgb(), color2.toArgb(), ratio)
         return Color(blendedColor)
@@ -130,14 +120,6 @@ fun MiniTimersTheme(
         )
     }
 
-//    val view = LocalView.current
-//    if (!view.isInEditMode) {
-//        SideEffect {
-//            val window = (view.context as Activity).window
-//            window.statusBarColor = colorScheme.primary.toArgb()
-//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-//        }
-//    }
 
      MaterialTheme(
          colorScheme = colorScheme,
@@ -145,24 +127,3 @@ fun MiniTimersTheme(
          content = content
      )
  }
-
-//@Composable
-//fun MiniTimersTheme(
-//    settingsDataStore: SettingsDataStore,
-//    content: @Composable () -> Unit
-//) {
-//    val darkModeFlow = settingsDataStore.darkModeFlow.collectAsState(initial = false)
-//
-//    val colors = if (darkModeFlow.value) {
-//        darkColorScheme() // Tema oscuro
-//    } else {
-//        lightColorScheme() // Tema claro
-//    }
-//
-//    MaterialTheme(
-//        colorScheme = colors,
-//        typography = Typography,
-////        shapes = Shapes,
-//        content = content
-//    )
-//}

@@ -9,12 +9,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 
-// Extension para acceder a DataStore
 val Context.dataStore by preferencesDataStore("timers_datastore")
 
 class TimersDataStore(private val context: Context) {
 
-    // Recuperar la lista de temporizadores guardados
     val timersFlow: Flow<List<Pair<String,Long>>> = context.dataStore.data
         .map { preferences ->
             preferences.asMap()
@@ -22,14 +20,12 @@ class TimersDataStore(private val context: Context) {
                 .map { it.key.name to (it.value as Long) }
         }
 
-    // Guardar un nuevo temporizador
     suspend fun saveTimer(timerId: String, time: Long) {
         context.dataStore.edit { preferences ->
             preferences[longPreferencesKey(timerId)] = time
         }
     }
 
-    // Eliminar un temporizador
     suspend fun removeTimer(timerId: String) {
         context.dataStore.edit { preferences ->
             preferences.remove(longPreferencesKey(timerId))
@@ -48,7 +44,6 @@ class TimersDataStore(private val context: Context) {
         val preferences = context.dataStore.data.first()
         return preferences[longPreferencesKey(timerId)]
     }
-
 
     suspend fun updateTimer(timerId: String, newTime: Long) {
         context.dataStore.edit { preferences ->

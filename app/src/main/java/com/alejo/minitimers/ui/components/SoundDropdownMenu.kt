@@ -18,7 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SoundOption
 import com.alejo.minitimers.utils.Sounds.SoundManager
 
@@ -39,7 +41,7 @@ fun SoundDropdownMenu(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Alarm Sound", style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.settings_alarmSound), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.weight(1f))
             Button(onClick = { expanded = true }) {
                 Text(text = selectedSound, style = MaterialTheme.typography.titleMedium)
@@ -56,7 +58,11 @@ fun SoundDropdownMenu(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = soundOption.name)
+                            Text(
+                                text = soundOption.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         }
                     },
                     onClick = {

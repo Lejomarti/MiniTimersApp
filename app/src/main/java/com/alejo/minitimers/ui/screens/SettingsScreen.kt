@@ -26,9 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
@@ -53,7 +55,7 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { TopBar(title = "Settings") },
+        topBar = { TopBar(title = stringResource(R.string.title_settings)) },
         bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
 
@@ -63,32 +65,28 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
                 .padding(paddingValues)
                 .padding(16.dp),
         ) {
-            //Titulo de la sección del menu
             Text(
-                text = "Theme Settings",
+                text = stringResource(R.string.settings_themes),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Switch para activar/desactivar modo oscuro
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "DarkMode", style = MaterialTheme.typography.titleMedium)
+                Text(text = stringResource(R.string.settings_DarkMode), style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = isDarkMode,
                     onCheckedChange = { newValue ->
-                        // Guardar el nuevo valor en DataStore
                         CoroutineScope(Dispatchers.IO).launch {
                             SettingsDataStore.saveDarkMode(context, newValue)
                         }
                     }
                 )
             }
-
 
             ColorDropdownMenu(
                 themeColors = themeColors,
@@ -117,7 +115,7 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
             )
 
             Text(
-                text = "Memory Settings",
+                text = stringResource(R.string.settings_memory),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -133,26 +131,25 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
                     showDialog = true
                 }
             ) {
-                Text(text = "Eliminar temporalizadores")
+                Text(text = stringResource(R.string.button_delete_All_timer))
             }
-
 
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
-                    title = { Text("Eliminar todo", color = Color.Red) },
-                    text = { Text("¿Estás seguro de que quieres eliminar todos los temporizadores?") },
+                    title = { Text(stringResource(R.string.alert_Deleta_all), color = Color.Red) },
+                    text = { Text(stringResource(R.string.alert_confirmation_message)) },
                     confirmButton = {
                         TextButton(onClick = {
                             showDialog = false
                             viewModel.removeAllTimers()
                         }) {
-                            Text("Si")
+                            Text(stringResource(R.string.alert_Yes))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showDialog = false }) {
-                            Text("No")
+                            Text(stringResource(R.string.alert_No))
                         }
                     }
                 )

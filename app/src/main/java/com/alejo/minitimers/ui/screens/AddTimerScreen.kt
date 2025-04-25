@@ -1,6 +1,5 @@
 package com.alejo.minitimers.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.data.personalizedtimersList
 import com.alejo.minitimers.ui.components.BottomNavBar
@@ -44,10 +45,10 @@ fun AddTimerScreen(navController: NavController,timersDataStore:TimersDataStore)
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Añadir temporizador") },
+                title = { stringResource(R.string.title_add_timer) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -84,6 +85,7 @@ fun AddTimerContent(navController: NavController, timersDataStore: TimersDataSto
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
+        Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             TimeSelector(selectedHour = selectedHour,
                 onHourChange = { selectedHour = it },
@@ -119,15 +121,14 @@ fun AddTimerContent(navController: NavController, timersDataStore: TimersDataSto
                     runBlocking {
                         timersDataStore.saveTimer(timerId, totalMillis)
                     }
-                    Log.d("alejoIsTalking", "El ID del timer es: $timerId")
                     navController.popBackStack()
                 }) {
-                Text(text = "Añadir")
+                Text(text = stringResource(R.string.button_add_timer))
             }
             Button(
                 modifier = Modifier.width(180.dp),
                 onClick = { navController.popBackStack() }) {
-                Text(text = "Cancelar")
+                Text(text = stringResource(R.string.button_cancel))
             }
         }
     }

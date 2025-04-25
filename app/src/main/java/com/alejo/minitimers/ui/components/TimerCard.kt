@@ -58,7 +58,6 @@ fun TimerCard(timeText: Long, color: Color, onClick: (() -> Unit)? = null) {
                     .padding(10.dp)
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    // Anillo de color sólido
                     drawArc(
                         color = color,
                         startAngle = 0f,
@@ -104,7 +103,6 @@ fun PlusIcon(
                             .background(Color.LightGray.copy(alpha = 0.4f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        // Mostrar un anillo sin funcionalidad
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Add Timer",

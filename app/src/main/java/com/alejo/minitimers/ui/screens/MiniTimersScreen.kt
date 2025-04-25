@@ -1,6 +1,7 @@
 package com.alejo.minitimers.ui.screens
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -8,10 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
@@ -49,10 +52,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
 
     LaunchedEffect(timers) {
     }
-
-    // UI
     Scaffold(
-        topBar = { TopBar("Mini Timer") },
+        topBar = { TopBar(title = stringResource(R.string.title_miniTimer)) },
         bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
@@ -70,7 +71,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Primer carrusel
                     TimersCarousel(
                         timers = upperList,
                         MaterialTheme.colorScheme.primary,
@@ -86,17 +86,20 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     )
                     Spacer(modifier = Modifier.weight(1f))
 
-                    // Anillo de temporizador
                     TimerRing(
                         progress = timeRemaining / (currentTimer ?: 1).toFloat(),
                         timeText = if (!wasInitialized) formatTime(upperList.sumOf { it.second }) else formatTime(
                             timeRemaining
                         ),
-                        additionalText = formatTime(elapsedTime + 50)
+                        additionalText = formatTime(elapsedTime + 50),
+                        onLongPress = {
+                            if(wasInitialized){
+                            viewModel.skipCurrentTimer{soundManager.playSound(context, resId!!)}
+                            Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
+                        }
+                        }
                     )
                     Spacer(modifier = Modifier.weight(1f))
-
-                    // Segundo carrusel
                     TimersCarousel(
                         timers = lowerList,
                         color = Color.LightGray,
@@ -105,7 +108,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         onClick = {}
                     )
                 }
-                // Botones de control
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -130,11 +132,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                                 disabledContentColor = Color.DarkGray
                             )
                         ) {
-                            Text(text = "Iniciar")
+                            Text(text = stringResource(R.string.button_start))
                         }
                     }
 
-                    if (wasInitialized) {
+                    if (wasInitialized && timeRemaining > 20L) {
                         Button(
                             modifier = Modifier.width(180.dp),
                             onClick = {
@@ -150,7 +152,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             },
                             enabled = isRunning || isPaused
                         ) {
-                            Text(text = if (isPaused) "Reanudar" else "Pausar")
+                            Text(text = if (isPaused) stringResource(R.string.button_resume) else stringResource(R.string.button_pause))
                         }
                     }
 
@@ -162,7 +164,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                                 viewModel.cancelTimer()
                             }
                         ) {
-                            Text(text = "Cancelar")
+                            Text(text = stringResource(R.string.button_cancel))
                         }
                     }
                 }

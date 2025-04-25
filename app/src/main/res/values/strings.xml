@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">Mini Timers</string>
+    <string name="title_miniTimer">Temporizador</string>
+    <string name="title_chronometer">Cronómetro</string>
+    <string name="title_settings">Configuraciones</string>
+    <string name="title_add_timer">Añadir temporizador</string>
+    <string name="title_edit_timer">Modificar temporizador</string>
+
+    <string name="button_start">Iniciar</string>
+    <string name="button_pause">Pausar</string>
+    <string name="button_resume">Reanudar</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_add_timer">Añadir</string>
+    <string name="button_save">Guardar</string>
+    <string name="button_delete_timer">Eliminar Temporizador</string>
+    <string name="button_delete_All_timer">Eliminar todos los temporizador</string>
+
+    <string name="hours">Horas</string>
+    <string name="minutes">Minutos</string>
+    <string name="seconds">Segundos</string>
+    <string name="back">Atrás</string>
+
+    <string name="settings_themes">Configuración de temas</string>
+    <string name="settings_memory">Configuración de memoria</string>
+    <string name="settings_DarkMode">Modo oscuro</string>
+    <string name="settings_themeColor">Color del tema</string>
+    <string name="settings_alarmSound">Sonido de alarma</string>
+
+
+    <string name="alert_Deleta_all">Eliminar todo</string>
+    <string name="alert_confirmation_message">¿Estás seguro de que quieres eliminar todos los temporizadores?</string>
+    <string name="alert_Yes">Si</string>
+    <string name="alert_No">No</string>
+
 </resources>

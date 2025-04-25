@@ -15,7 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.alejo.minitimers.R
 
 @Composable
 fun ColorDropdownMenu(
@@ -32,7 +34,7 @@ fun ColorDropdownMenu(
                    .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Theme color", style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.settings_themeColor), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.weight(1f))
             Button(onClick = { expanded = true }) {
                 Text(text = selectedThemeColor, style = MaterialTheme.typography.titleMedium)
@@ -52,7 +54,7 @@ fun ColorDropdownMenu(
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .background(themeColors[colorName]?.get(0) ?: Color.Gray) // Usa el color primario
+                                    .background(themeColors[colorName]?.get(0) ?: Color.Gray)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(colorName, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)

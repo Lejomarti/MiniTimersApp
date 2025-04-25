@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mini Timers</string>
+    <string name="title_miniTimer">Timer</string>
+    <string name="title_chronometer">Chronometer</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_add_timer">Add Timer</string>
+    <string name="title_edit_timer">Edit Timer</string>
+    <string name="button_start">Start</string>
+    <string name="button_pause">Pause</string>
+    <string name="button_resume">Resume</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_add_timer">Add Timer</string>
+    <string name="button_save">Save</string>
+    <string name="button_delete_timer">Delete Timer</string>
+    <string name="button_delete_All_timer">Delete All Timers</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
+    <string name="seconds">Seconds</string>
+    <string name="back">Back</string>
+    <string name="settings_themes">Theme Settings</string>
+    <string name="settings_memory">Memory Settings</string>
+    <string name="settings_DarkMode">Dark mode</string>
+    <string name="settings_themeColor">Theme color</string>
+    <string name="settings_alarmSound">Alarm sound</string>
+    <string name="alert_Deleta_all">Delete all</string>
+    <string name="alert_confirmation_message">Are you sure you want to delete all timers?</string>
+    <string name="alert_Yes">Yes</string>
+    <string name="alert_No">No</string>
+</resources>

@@ -1,6 +1,5 @@
 package com.alejo.minitimers.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimeSelector
@@ -52,16 +53,18 @@ fun TimerDetailsScreen(
     LaunchedEffect(timerId) {
         timerId?.let {
             timerValue = timersDataStore.getTimerById(it)
-            Log.d("alejoIsTalking", "El ID del timer seleccionado es: $timerId")
         }
     }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Modificar temporizador") },
+                title = { stringResource(R.string.title_edit_timer) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
@@ -74,8 +77,8 @@ fun TimerDetailsScreen(
                 .padding(bottom = 16.dp)
 
         ) {
-            timerValue?.let{
-                EditTimerContent(navController, timerId, timerValue!!,timersDataStore, scope)
+            timerValue?.let {
+                EditTimerContent(navController, timerId, timerValue!!, timersDataStore, scope)
             }
         }
     }
@@ -98,8 +101,13 @@ fun EditTimerContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
         TimeSelector(
             selectedHour = selectedHour,
             onHourChange = { selectedHour = it },
@@ -110,38 +118,43 @@ fun EditTimerContent(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly){
-    Button(onClick = {
-        val newTime = (selectedHour * 3600_000L + selectedMinute * 60_000L + selectedSecond * 1_000L)
-        timerId?.let { id ->
-            scope.launch {
-                timersDataStore.updateTimer(id, newTime) // Guardar el nuevo tiempo
-                navController.popBackStack() // Volver a la pantalla anterior
-            }
         }
 
-    }){
-        Text("Guardar")
-    }
-
-    Button(
-        colors = ButtonDefaults.buttonColors(Color.Red),
-        onClick = {
-            timerId?.let { id ->
-                scope.launch {
-                    Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
-                    timersDataStore.removeTimer(id)
-                    navController.popBackStack()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        )
+        {
+            Button(onClick = {
+                val newTime =
+                    (selectedHour * 3600_000L + selectedMinute * 60_000L + selectedSecond * 1_000L)
+                timerId?.let { id ->
+                    scope.launch {
+                        timersDataStore.updateTimer(id, newTime)
+                        navController.popBackStack()
+                    }
                 }
 
+            }) {
+                Text(stringResource(R.string.button_save))
+            }
+
+            Button(
+                colors = ButtonDefaults.buttonColors(Color.Red),
+                onClick = {
+                    timerId?.let { id ->
+                        scope.launch {
+                            timersDataStore.removeTimer(id)
+                            navController.popBackStack()
+                        }
+
+                    }
+                }
+
+            ) {
+                Text(stringResource(R.string.button_delete_timer))
             }
         }
-
-    ) {
-        Text("Eliminar Temporizador")
-    }
-}
     }
 }
