@@ -22,10 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimerRing
 import com.alejo.minitimers.ui.components.TopBar
@@ -47,7 +49,7 @@ fun ChronometerScreen(navController: NavController) {
     val progressInMinute: Float by viewModel.progressInMinute.collectAsState()
 
     Scaffold(
-        topBar = { TopBar(title = "Chronometer") },
+        topBar = { TopBar(title = stringResource(R.string.title_chronometer)) },
         bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
@@ -79,7 +81,7 @@ fun ChronometerScreen(navController: NavController) {
                             modifier = Modifier.width(300.dp),
                             onClick = { viewModel.startChronometer() },
                         ) {
-                            Text(text = "Empezar")
+                            Text(text = stringResource(R.string.button_start))
                         }
                     } else {
                         Button(
@@ -90,14 +92,14 @@ fun ChronometerScreen(navController: NavController) {
                                 else viewModel.pauseChronometer()
                             }
                         ) {
-                            Text(text = if (!chronometerIsRunning) "Reanudar" else "Pausar")
+                            Text(text = if (!chronometerIsRunning) stringResource(R.string.button_resume) else stringResource(R.string.button_pause))
                         }
                         Button(
                             modifier = Modifier.width(180.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF811E2A)),
                             onClick = { viewModel.cancelChronometer() }
                         ) {
-                            Text(text = "Cancelar")
+                            Text(text = stringResource(R.string.button_cancel))
                         }
                     }
                 }

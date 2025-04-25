@@ -13,8 +13,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alejo.minitimers.R
 import com.alejo.minitimers.navigation.AppScreens
 
 
@@ -24,9 +26,9 @@ fun BottomNavBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val items = listOf(
-        Triple("MiniTimer", Icons.Filled.Home, AppScreens.MiniTimersScreen.route),
-        Triple("Chronometer", Icons.Filled.PlayArrow, AppScreens.ChronometerScreen.route),
-        Triple("Settings", Icons.Filled.Settings, AppScreens.SettingsScreen.route)
+        Triple(stringResource(R.string.title_miniTimer), Icons.Filled.Home, AppScreens.MiniTimersScreen.route),
+        Triple(stringResource(R.string.title_chronometer), Icons.Filled.PlayArrow, AppScreens.ChronometerScreen.route),
+        Triple(stringResource(R.string.title_settings), Icons.Filled.Settings, AppScreens.SettingsScreen.route)
     )
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.secondaryContainer

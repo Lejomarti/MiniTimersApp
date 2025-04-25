@@ -1,6 +1,5 @@
 package com.alejo.minitimers.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimeSelector
@@ -52,13 +53,12 @@ fun TimerDetailsScreen(
     LaunchedEffect(timerId) {
         timerId?.let {
             timerValue = timersDataStore.getTimerById(it)
-            Log.d("alejoIsTalking", "El ID del timer seleccionado es: $timerId")
         }
     }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Modificar temporizador") },
+                title = { stringResource(R.string.title_edit_timer) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -137,7 +137,7 @@ fun EditTimerContent(
                 }
 
             }) {
-                Text("Guardar")
+                Text(stringResource(R.string.button_save))
             }
 
             Button(
@@ -145,7 +145,6 @@ fun EditTimerContent(
                 onClick = {
                     timerId?.let { id ->
                         scope.launch {
-                            Log.d("alejoIsTalking", "Estabas en la pantalla con el id $timerId")
                             timersDataStore.removeTimer(id)
                             navController.popBackStack()
                         }
@@ -154,7 +153,7 @@ fun EditTimerContent(
                 }
 
             ) {
-                Text("Eliminar Temporizador")
+                Text(stringResource(R.string.button_delete_timer))
             }
         }
     }

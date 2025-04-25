@@ -9,10 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
@@ -51,7 +53,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     LaunchedEffect(timers) {
     }
     Scaffold(
-        topBar = { TopBar("Mini Timer") },
+        topBar = { TopBar(title = stringResource(R.string.title_miniTimer)) },
         bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         Box(
@@ -130,7 +132,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                                 disabledContentColor = Color.DarkGray
                             )
                         ) {
-                            Text(text = "Iniciar")
+                            Text(text = stringResource(R.string.button_start))
                         }
                     }
 
@@ -150,7 +152,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             },
                             enabled = isRunning || isPaused
                         ) {
-                            Text(text = if (isPaused) "Reanudar" else "Pausar")
+                            Text(text = if (isPaused) stringResource(R.string.button_resume) else stringResource(R.string.button_pause))
                         }
                     }
 
@@ -162,7 +164,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                                 viewModel.cancelTimer()
                             }
                         ) {
-                            Text(text = "Cancelar")
+                            Text(text = stringResource(R.string.button_cancel))
                         }
                     }
                 }
