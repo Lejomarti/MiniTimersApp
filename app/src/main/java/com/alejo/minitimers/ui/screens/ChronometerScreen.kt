@@ -68,8 +68,10 @@ fun ChronometerScreen(navController: NavController) {
                 TimerRing(
                     progress = progressInMinute,
                     timeText = chronometerDisplayTime,
-                    additionalText = ""
-
+                    additionalText = "",
+                    onLongPress={},
+                    repeatCount = 0,
+                    onRepeatClick = {}
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(

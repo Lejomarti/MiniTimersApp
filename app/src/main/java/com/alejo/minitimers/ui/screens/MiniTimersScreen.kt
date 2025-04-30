@@ -50,6 +50,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     val soundOption = SoundList.sounds.find { it.id == selectedSound }
     val resId = soundOption?.resId
 
+    val repeatCount by viewModel.repeatCount
+
     LaunchedEffect(timers) {
     }
     Scaffold(
@@ -97,6 +99,10 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             viewModel.skipCurrentTimer{soundManager.playSound(context, resId!!)}
                             Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
                         }
+                        },
+                        repeatCount = repeatCount,
+                        onRepeatClick = {
+                            viewModel.cycleRepeatCount()
                         }
                     )
                     Spacer(modifier = Modifier.weight(1f))

@@ -7,6 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,14 +23,18 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun TimerRing(
     progress: Float,
     timeText: String,
     additionalText: String,
-    onLongPress: (() -> Unit)? = null
+    onLongPress: (() -> Unit)? = null,
+    repeatCount: Int = 0,
+    onRepeatClick: ()-> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val timerRingHeight = screenHeight * 0.35f
@@ -78,5 +88,42 @@ fun TimerRing(
                     color = secondaryTextColor
                 )
             }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(0.dp)
+            ){
+                IconButton(onClick = onRepeatClick) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Repeat",
+                        tint = if (repeatCount > 0) MaterialTheme.colorScheme.primary else Color.Gray
+                    )
+                    if (repeatCount > 0) {
+                        Text(
+                            text = repeatCount.toString(),
+                            color = textColor,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .offset(x = (-4).dp, y = 4.dp)
+                        )
+                    }
+                }
+            }
         }
     }
+
+
+@Preview
+@Composable
+fun TimerRingPreview(){
+    TimerRing(
+        progress = 1.0F,
+        timeText = "00:00",
+        additionalText = "00:00",
+        onLongPress = {},
+        repeatCount = 1
+    ) { }
+}

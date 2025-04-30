@@ -3,6 +3,7 @@ package com.alejo.minitimers.ui.viewmodels
 import android.os.CountDownTimer
 import android.os.SystemClock
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +47,10 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
     private var countDownTimer: CountDownTimer? = null
     private var chronoJob: Job? = null
     private val intervals: Long = 10
+
+    private val _repeatCount = mutableIntStateOf(0)
+    val repeatCount: State<Int> = _repeatCount
+
 
     init {
         loadTimers()
