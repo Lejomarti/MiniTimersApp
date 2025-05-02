@@ -33,6 +33,7 @@ fun TimerRing(
     timeText: String,
     additionalText: String,
     onLongPress: (() -> Unit)? = null,
+    repeatCountIsEnabled: Boolean = false,
     repeatCount: Int = 0,
     onRepeatClick: ()-> Unit
 ) {
@@ -88,27 +89,28 @@ fun TimerRing(
                     color = secondaryTextColor
                 )
             }
-
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(0.dp)
-            ){
-                IconButton(onClick = onRepeatClick) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Repeat",
-                        tint = if (repeatCount > 0) MaterialTheme.colorScheme.primary else Color.Gray
-                    )
-                    if (repeatCount > 0) {
-                        Text(
-                            text = repeatCount.toString(),
-                            color = textColor,
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .offset(x = (-4).dp, y = 4.dp)
+            if(repeatCountIsEnabled) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(0.dp)
+                ) {
+                    IconButton(onClick = onRepeatClick) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Repeat",
+                            tint = if (repeatCount > 0) MaterialTheme.colorScheme.primary else Color.Gray
                         )
+                        if (repeatCount > 0) {
+                            Text(
+                                text = (repeatCount + 1).toString(),
+                                color = textColor,
+                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = (-4).dp, y = 4.dp)
+                            )
+                        }
                     }
                 }
             }

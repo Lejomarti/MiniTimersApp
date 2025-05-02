@@ -100,6 +100,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
                         }
                         },
+                        repeatCountIsEnabled = true,
                         repeatCount = repeatCount,
                         onRepeatClick = {
                             viewModel.cycleRepeatCount()
@@ -124,14 +125,23 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         Button(
                             modifier = Modifier.width(300.dp),
                             onClick = {
-                                if (upperList.isNotEmpty()) {
-                                    viewModel.startTimer {
-                                        resId?.let {
-                                            soundManager.playSound(context, it)
-                                        }
-                                    }
-                                }
+                                 viewModel.startTimerWithRepeat { soundManager.playSound(context, resId!!) }
                             },
+//                                if (upperList.isNotEmpty()) {
+//                                    viewModel.startTimer {
+//                                        resId?.let {
+//                                            soundManager.playSound(context, it)
+//                                        }
+//                                    }
+//                                }
+//                                if (upperList.isNotEmpty()) {
+//                                    viewModel.startTimerWithRepeat {
+//                                        resId?.let {
+//                                            soundManager.playSound(context, it)
+//                                        }
+//                                    }
+//                                }
+//                            },
                             enabled = upperList.isNotEmpty(),
                             colors = ButtonDefaults.buttonColors(
                                 disabledContainerColor = Color.Gray,

@@ -70,6 +70,7 @@ fun ChronometerScreen(navController: NavController) {
                     timeText = chronometerDisplayTime,
                     additionalText = "",
                     onLongPress={},
+                    repeatCountIsEnabled = false,
                     repeatCount = 0,
                     onRepeatClick = {}
                 )

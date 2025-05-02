@@ -2,6 +2,7 @@ package com.alejo.minitimers.ui.viewmodels
 
 import android.os.CountDownTimer
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -50,7 +51,9 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
 
     private val _repeatCount = mutableIntStateOf(0)
     val repeatCount: State<Int> = _repeatCount
+    private var currentRepeatLeft = 0
 
+    private var initialTimers: List<Pair<String, Long>> = emptyList() // Guardar la lista original
 
     init {
         loadTimers()
@@ -60,9 +63,10 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
         viewModelScope.launch {
             timersDataStore.timersFlow.collectLatest { fetchedTimers ->
                 _timers.value = fetchedTimers
+                initialTimers = fetchedTimers // Guardar la lista original
                 resetLists(fetchedTimers)
 
-                if(fetchedTimers.isNotEmpty() && !_wasInitialized.value){
+                if (fetchedTimers.isNotEmpty() && !_wasInitialized.value) {
                     _wasInitialized.value = false
                 }
             }
@@ -111,66 +115,71 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
         _isRunning.value = false
     }
 
+
     // Resetear las listas
-    private fun resetLists(initialTimers: List<Pair<String, Long>>) {
+    private fun resetLists(timersToReset: List<Pair<String, Long>>) {
         _upperList.clear()
-        _upperList.addAll(initialTimers)
+        _upperList.addAll(timersToReset)
         _lowerList.clear()
-        _wasInitialized.value = false
     }
 
-    // Iniciar el temporizador
-    fun startTimer(onTimerFinished: () -> Unit) {
+    private fun _startInternalTimer(onTimerFinished: () -> Unit) {
         if (_upperList.isNotEmpty()) {
-            if (!_wasInitialized.value) {
-                _wasInitialized.value = true
-                startChrono() // Solo inicia el cronómetro una vez al principio
-            }
             _currentTimer.value = _upperList.removeAt(0).second
             _timeRemaining.longValue = _currentTimer.value ?: 0L
 
-            countDownTimer?.cancel() // Cancela cualquier temporizador previo
+            countDownTimer?.cancel()
             countDownTimer = object : CountDownTimer(_timeRemaining.longValue, intervals) {
                 override fun onTick(millisUntilFinished: Long) {
                     _timeRemaining.longValue = millisUntilFinished
                 }
 
                 override fun onFinish() {
-                    _currentTimer.value?.let {
-                        _lowerList.add(Pair(_currentTimer.value.toString(), it))
-                        _currentTimer.value = null
-                        onTimerFinished()
-                    }
-
-                    if (_upperList.isNotEmpty()) {
-                        startTimer(onTimerFinished)
-                    } else {
-                        _isRunning.value = false
-                        pauseChrono()
-                    }
+                    onTimerFinished()
                 }
             }.start()
+            _isRunning.value = true
+            _isPaused.value = false
         } else {
             _isRunning.value = false
-            _wasInitialized.value = false
-            pauseChrono()
+            _currentTimer.value = null
+            _timeRemaining.longValue = 0L
+        }
+    }
+
+    // Iniciar el temporizador
+    fun startTimer(onTimerFinished: () -> Unit) {
+        if (!_wasInitialized.value && _timers.value.isNotEmpty()) {
+            _wasInitialized.value = true
+            startChrono()
+        }
+        _startInternalTimer {
+            val finishedTimer = _currentTimer.value
+            if (finishedTimer != null) {
+                _lowerList.add(Pair(finishedTimer.toString(), finishedTimer))
+                _currentTimer.value = null
+                onTimerFinished()
+            }
+
+            if (_upperList.isNotEmpty()) {
+                startTimer(onTimerFinished)
+            } else {
+
+                _isRunning.value = false
+                pauseChrono()
+                if (currentRepeatLeft > 0) {
+                    currentRepeatLeft--
+                    resetLists(initialTimers)
+                    startTimer(onTimerFinished)
+                } else {
+                    _wasInitialized.value = true  //si hay bug es aca
+                }
+            }
         }
     }
 
     fun onTimerFinish(playSound: () -> Unit) {
-        _currentTimer.value?.let {
-            _lowerList.add(Pair(_currentTimer.value.toString(), it))
-            _currentTimer.value = null
-            playSound()
-        }
-
-        if (_upperList.isNotEmpty()) {
-            startTimer(playSound)
-        } else {
-            _isRunning.value = false
-            _timeRemaining.longValue = 0L
-            pauseChrono()
-        }
+        playSound()
     }
 
     // Pausar el temporizador
@@ -207,6 +216,7 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
         _timeRemaining.longValue = 0L
         _currentTimer.value = null
         resetLists(_timers.value)
+        _repeatCount.intValue = repeatCount.value
         cancelChrono()
     }
 
@@ -232,4 +242,24 @@ class TimerViewModel(private val timersDataStore: TimersDataStore) : ViewModel()
             pauseChrono()
         }
     }
+
+    fun cycleRepeatCount() {
+        _repeatCount.intValue = (_repeatCount.intValue + 1) % 4
+    }
+
+    fun resetRepeatCount() {
+        _repeatCount.intValue = 0
+        currentRepeatLeft = 0
+    }
+
+    // Iniciar el temporizador con repetición
+    fun startTimerWithRepeat(onTimerFinished: () -> Unit) {
+        if (_timers.value.isNotEmpty()) {
+            _wasInitialized.value = false
+            currentRepeatLeft = _repeatCount.intValue
+            resetLists(initialTimers)
+            startTimer(onTimerFinished)
+        }
+    }
+
 }
