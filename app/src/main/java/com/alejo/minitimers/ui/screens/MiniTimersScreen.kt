@@ -42,7 +42,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
     val currentTimer by viewModel.currentTimer
     val timeRemaining by viewModel.timeRemaining
 
-//    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val soundManager = remember { SoundManager() }
@@ -127,21 +126,6 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             onClick = {
                                  viewModel.startTimerWithRepeat { soundManager.playSound(context, resId!!) }
                             },
-//                                if (upperList.isNotEmpty()) {
-//                                    viewModel.startTimer {
-//                                        resId?.let {
-//                                            soundManager.playSound(context, it)
-//                                        }
-//                                    }
-//                                }
-//                                if (upperList.isNotEmpty()) {
-//                                    viewModel.startTimerWithRepeat {
-//                                        resId?.let {
-//                                            soundManager.playSound(context, it)
-//                                        }
-//                                    }
-//                                }
-//                            },
                             enabled = upperList.isNotEmpty(),
                             colors = ButtonDefaults.buttonColors(
                                 disabledContainerColor = Color.Gray,

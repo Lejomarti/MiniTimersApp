@@ -33,7 +33,6 @@ fun TimerList(personalizedTimers: List<PersonalizedTimer>, onTimerClick: (Long) 
                 timeText = timer.personalizedTime,
                 color = MaterialTheme.colorScheme.primary,
                 onClick = { onTimerClick(timer.personalizedTime) },
-//                navController = navController
             )
         }
         item {

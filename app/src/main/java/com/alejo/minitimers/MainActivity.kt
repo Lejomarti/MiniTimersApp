@@ -32,11 +32,3 @@ class MainActivity : ComponentActivity() {
 fun MiniTimersApp(timersDataStore: TimersDataStore) {
             AppNavigation(timersDataStore = timersDataStore)
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun MinitimersAppPreview() {
-//    MiniTimersTheme {
-////        MiniTimersApp(timersDataStore)
-//    }
-//}
