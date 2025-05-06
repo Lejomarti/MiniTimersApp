@@ -34,6 +34,7 @@ import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
+import com.alejo.minitimers.ui.components.BannerAd
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.ColorDropdownMenu
 import com.alejo.minitimers.ui.components.SoundDropdownMenu
@@ -133,6 +134,9 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
             ) {
                 Text(text = stringResource(R.string.button_delete_All_timer))
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+            BannerAd()
 
             if (showDialog) {
                 AlertDialog(

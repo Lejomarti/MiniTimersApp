@@ -1,6 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0"
+}
+
+val signingProperties = Properties()
+val localProperties = project.rootProject.file("signing.properties")
+if (localProperties.exists()) {
+    signingProperties.load(localProperties.inputStream())
 }
 
 android {
@@ -20,6 +29,31 @@ android {
         }
     }
 
+
+    flavorDimensions += "version"
+    productFlavors {
+        productFlavors {
+            create("free") {
+                dimension = "version"
+                applicationIdSuffix = ".free"
+                versionNameSuffix = "-free"
+            }
+            create("pro") {
+                dimension = "version"
+                applicationIdSuffix = ".pro"
+                versionNameSuffix = "-pro"
+            }
+        }
+    }
+
+    signingConfigs {
+        create("release"){
+            keyAlias = signingProperties.getProperty("keyAlias")
+            keyPassword = signingProperties.getProperty("keyPassword")
+            storeFile = file(signingProperties.getProperty("storeFile"))
+            storePassword = signingProperties.getProperty("storePassword")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -40,7 +74,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -73,4 +107,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx.v1120)
+
+    implementation("com.google.android.gms:play-services-ads:24.2.0")
+
 }
