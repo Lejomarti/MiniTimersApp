@@ -1,5 +1,6 @@
 package com.alejo.minitimers.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,9 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.BuildConfig
 import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
@@ -54,6 +57,7 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
     val selectedThemeColor by SettingsDataStore.themeColor(context).collectAsState(initial = "Blue")
     val selectedSound by SettingsDataStore.selectedSound(context).collectAsState(initial = "timer")
     var showDialog by remember { mutableStateOf(false) }
+    val versionText = if (BuildConfig.FLAVOR == "free") {"Free Version"} else {"Pro Version"}
 
     Scaffold(
         topBar = { TopBar(title = stringResource(R.string.title_settings)) },
@@ -66,6 +70,10 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
                 .padding(paddingValues)
                 .padding(16.dp),
         ) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+
+            Text(text = versionText,style = MaterialTheme.typography.titleMedium,color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center)
+            }
             Text(
                 text = stringResource(R.string.settings_themes),
                 style = MaterialTheme.typography.labelSmall,
@@ -136,7 +144,7 @@ fun SettingsScreen(navController: NavController, timersDataStore: TimersDataStor
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            BannerAd()
+            if (BuildConfig.FLAVOR == "free") {BannerAd()}
 
             if (showDialog) {
                 AlertDialog(

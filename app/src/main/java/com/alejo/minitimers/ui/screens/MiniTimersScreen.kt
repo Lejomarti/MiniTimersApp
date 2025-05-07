@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.BuildConfig
 import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
@@ -73,7 +74,7 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BannerAd()
+                    if (BuildConfig.FLAVOR == "free") {BannerAd()}
                     Spacer(modifier = Modifier.weight(1f))
                     TimersCarousel(
                         timers = upperList,

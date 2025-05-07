@@ -31,7 +31,6 @@ android {
 
 
     flavorDimensions += "version"
-    productFlavors {
         productFlavors {
             create("free") {
                 dimension = "version"
@@ -44,7 +43,6 @@ android {
                 versionNameSuffix = "-pro"
             }
         }
-    }
 
     signingConfigs {
         create("release"){
@@ -72,6 +70,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig  = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
@@ -108,6 +107,6 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx.v1120)
 
-    implementation("com.google.android.gms:play-services-ads:24.2.0")
+    implementation(libs.play.services.ads)
 
 }
