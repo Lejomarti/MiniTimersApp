@@ -14,4 +14,4 @@
 .cxx
 local.properties
 *.jks
-signing.properties
+app/signing.properties

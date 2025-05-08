@@ -7,7 +7,7 @@ plugins {
 }
 
 val signingProperties = Properties()
-val localProperties = project.rootProject.file("signing.properties")
+val localProperties = project.rootProject.file("app/signing.properties")
 if (localProperties.exists()) {
     signingProperties.load(localProperties.inputStream())
 }
@@ -31,21 +31,21 @@ android {
 
 
     flavorDimensions += "version"
-        productFlavors {
-            create("free") {
-                dimension = "version"
-                applicationIdSuffix = ".free"
-                versionNameSuffix = "-free"
-            }
-            create("pro") {
-                dimension = "version"
-                applicationIdSuffix = ".pro"
-                versionNameSuffix = "-pro"
-            }
+    productFlavors {
+        create("free") {
+            dimension = "version"
+            applicationIdSuffix = ".free"
+            versionNameSuffix = "-free"
         }
+        create("pro") {
+            dimension = "version"
+            applicationIdSuffix = ".pro"
+            versionNameSuffix = "-pro"
+        }
+    }
 
     signingConfigs {
-        create("release"){
+        create("release") {
             keyAlias = signingProperties.getProperty("keyAlias")
             keyPassword = signingProperties.getProperty("keyPassword")
             storeFile = file(signingProperties.getProperty("storeFile"))
@@ -55,10 +55,14 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -70,7 +74,7 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig  = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
@@ -84,7 +88,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.navigation.compose)
-    implementation (libs.dev.snapper)
+    implementation(libs.dev.snapper)
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.core.ktx)
