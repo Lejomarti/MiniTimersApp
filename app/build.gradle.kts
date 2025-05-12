@@ -1,6 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0"
+}
+
+val signingProperties = Properties()
+val localProperties = file("signing.properties")
+if (localProperties.exists()) {
+    signingProperties.load(localProperties.inputStream())
 }
 
 android {
@@ -11,8 +20,8 @@ android {
         applicationId = "com.alejo.minitimers"
         minSdk = 28
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -20,14 +29,39 @@ android {
         }
     }
 
+
+    flavorDimensions += "version"
+    productFlavors {
+        create("free") {
+            dimension = "version"
+            applicationIdSuffix = ".free"
+            versionNameSuffix = "-free"
+        }
+        create("pro") {
+            dimension = "version"
+            applicationIdSuffix = ".pro"
+            versionNameSuffix = "-pro"
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = signingProperties.getProperty("keyAlias")
+            keyPassword = signingProperties.getProperty("keyPassword")
+            storeFile = file(signingProperties.getProperty("storeFile"))
+            storePassword = signingProperties.getProperty("storePassword")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -38,9 +72,10 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -51,7 +86,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.navigation.compose)
-    implementation (libs.dev.snapper)
+    implementation(libs.dev.snapper)
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.core.ktx)
@@ -73,4 +108,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx.v1120)
+
+    implementation(libs.play.services.ads)
+
 }

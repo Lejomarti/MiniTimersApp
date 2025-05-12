@@ -27,7 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.BuildConfig
 import com.alejo.minitimers.R
+import com.alejo.minitimers.ui.components.BannerAd
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimerRing
 import com.alejo.minitimers.ui.components.TopBar
@@ -63,6 +65,7 @@ fun ChronometerScreen(navController: NavController) {
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if (BuildConfig.FLAVOR == "free") {BannerAd()}
                 Spacer(modifier = Modifier.height(24.dp))
 
                 TimerRing(

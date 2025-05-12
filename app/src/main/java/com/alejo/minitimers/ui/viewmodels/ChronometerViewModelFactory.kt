@@ -9,6 +9,7 @@ class ChronometerViewModelFactory(
 ): ViewModelProvider.Factory{
     override fun <T: ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChronometerViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
             return ChronometerViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -14,11 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.alejo.minitimers.BuildConfig
 import com.alejo.minitimers.R
 import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.SoundList
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppScreens
+import com.alejo.minitimers.ui.components.BannerAd
 import com.alejo.minitimers.ui.components.BottomNavBar
 import com.alejo.minitimers.ui.components.TimerRing
 import com.alejo.minitimers.ui.components.TimersCarousel
@@ -72,6 +74,8 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (BuildConfig.FLAVOR == "free") {BannerAd()}
+                    Spacer(modifier = Modifier.weight(1f))
                     TimersCarousel(
                         timers = upperList,
                         MaterialTheme.colorScheme.primary,
@@ -94,10 +98,15 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         ),
                         additionalText = formatTime(elapsedTime + 50),
                         onLongPress = {
-                            if(wasInitialized){
-                            viewModel.skipCurrentTimer{soundManager.playSound(context, resId!!)}
-                            Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
-                        }
+                            if (wasInitialized) {
+                                viewModel.skipCurrentTimer {
+                                    soundManager.playSound(
+                                        context,
+                                        resId!!
+                                    )
+                                }
+                                Toast.makeText(context, "Timer skipped", Toast.LENGTH_SHORT).show()
+                            }
                         },
                         repeatCountIsEnabled = true,
                         repeatCount = repeatCount,
@@ -124,7 +133,12 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                         Button(
                             modifier = Modifier.width(300.dp),
                             onClick = {
-                                 viewModel.startTimerWithRepeat { soundManager.playSound(context, resId!!) }
+                                viewModel.startTimerWithRepeat {
+                                    soundManager.playSound(
+                                        context,
+                                        resId!!
+                                    )
+                                }
                             },
                             enabled = upperList.isNotEmpty(),
                             colors = ButtonDefaults.buttonColors(
@@ -152,7 +166,11 @@ fun MiniTimersScreen(navController: NavController, timersDataStore: TimersDataSt
                             },
                             enabled = isRunning || isPaused
                         ) {
-                            Text(text = if (isPaused) stringResource(R.string.button_resume) else stringResource(R.string.button_pause))
+                            Text(
+                                text = if (isPaused) stringResource(R.string.button_resume) else stringResource(
+                                    R.string.button_pause
+                                )
+                            )
                         }
                     }
 

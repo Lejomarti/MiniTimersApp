@@ -11,10 +11,12 @@ import com.alejo.minitimers.data.SettingsDataStore
 import com.alejo.minitimers.data.TimersDataStore
 import com.alejo.minitimers.navigation.AppNavigation
 import com.alejo.minitimers.ui.theme.MiniTimersTheme
+import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this)
         enableEdgeToEdge()
         val timersDataStore = TimersDataStore(this)
         setContent {
