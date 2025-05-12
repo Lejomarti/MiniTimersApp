@@ -7,7 +7,7 @@ plugins {
 }
 
 val signingProperties = Properties()
-val localProperties = project.rootProject.file("app/signing.properties")
+val localProperties = file("signing.properties")
 if (localProperties.exists()) {
     signingProperties.load(localProperties.inputStream())
 }
@@ -20,8 +20,8 @@ android {
         applicationId = "com.alejo.minitimers"
         minSdk = 28
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -61,9 +61,7 @@ android {
                 "proguard-rules.pro"
             )
         }
-        debug {
-            signingConfig = signingConfigs.getByName("release")
-        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
